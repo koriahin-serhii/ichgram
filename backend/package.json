@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run build && node dist/index",
+    "start": "npm run build && node dist/index.js",
     "build": "tsc",
-    "dev": "nodemon src/index"
+    "dev": "node --loader ts-node/esm src/index.ts"
   },
   "keywords": [],
   "author": "",

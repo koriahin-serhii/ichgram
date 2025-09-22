@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import connectDB from './config/db.js';
+import cors from 'cors';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -9,14 +10,25 @@ const PORT: string | number = process.env.PORT || 3000;
 
 app.use(express.json());
 
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+}));
+
+
 app.get('/', (req: Request, res: Response) => {
+  res.send('Welcome to the API root!');
+});
+
+app.get('/api/data', (req: Request, res: Response) => {
   res.send('API is running...');
 });
 
 app.listen(PORT, async () => {
   try {
-    console.log(`Server is running on port ${PORT}`);
     await connectDB();
+    console.log(`Server is running on port: http://localhost:${PORT}`);
   } catch (error) {
     console.error('Error connecting to the database:', error);
   }

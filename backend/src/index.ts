@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import connectDB from './config/db.js';
+import authRoutes from './routes/authRoutes.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -21,9 +22,8 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the API root!');
 });
 
-app.get('/api/data', (req: Request, res: Response) => {
-  res.send('API is running...');
-});
+app.use('/api/auth', authRoutes);
+
 
 app.listen(PORT, async () => {
   try {

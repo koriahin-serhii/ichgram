@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
+import userRouters from './routes/userRoutes.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -23,6 +24,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/user', userRouters);
 
 
 app.listen(PORT, async () => {

@@ -2,14 +2,14 @@ import mongoose, { Schema, Document, Types } from 'mongoose';
 
 export interface Post extends Document {
   description: string;
-  image: string;
+  imageUrl: string;
   author: Types.ObjectId;
 }
 
 const postSchema = new Schema<Post>(
   {
     description: { type: String, required: true },
-    image: { type: String, required: true },
+  imageUrl: { type: String, required: true },
     author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   },
   { timestamps: true }

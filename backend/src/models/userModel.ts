@@ -1,7 +1,7 @@
-import mongoose, { CallbackError } from 'mongoose';
+import mongoose, { CallbackError, Schema, Document } from 'mongoose';
 import bcrypt from 'bcrypt';
 
-export interface User extends mongoose.Document {
+export interface User extends Document {
   name: string;
   email: string;
   password: string;
@@ -9,7 +9,7 @@ export interface User extends mongoose.Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const userSchema = new mongoose.Schema<User>(
+const userSchema = new Schema<User>(
   {
     name: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },

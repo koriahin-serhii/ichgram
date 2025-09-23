@@ -1,5 +1,17 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel.js';
+import { Types } from 'mongoose';
+
+interface AuthenticatedRequest extends Request {
+  user?: string | Types.ObjectId;
+  file?: Express.Multer.File;
+}
+
+interface UpdateProfileData {
+  name?: string;
+  bio?: string;
+  profileImage?: string;
+}
 
 // Getting user profile by ID (without password)
 export const getProfile = async (req: Request, res: Response) => {
@@ -16,19 +28,20 @@ export const getProfile = async (req: Request, res: Response) => {
 };
 
 // Updating profile (name, bio, avatar)
-export const updateProfile = async (req: Request, res: Response) => {
+export const updateProfile = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
   try {
-    const userId = (req as any).user;
+    const userId = req.user;
     const { name, bio } = req.body;
-    const updateData: any = {};
+    const updateData: UpdateProfileData = {};
     if (name) updateData.name = name;
     if (bio) updateData.bio = bio;
-    const file = (req as Request & { file?: Express.Multer.File }).file;
-    if (file) {
-      const base64Image = `data:${file.mimetype};base64,${file.buffer.toString(
-        'base64'
-      )}`;
-      updateData.profileImage = base64Image;
+    if (req.file) {
+      updateData.profileImage = `data:${
+        req.file.mimetype
+      };base64,${req.file.buffer.toString('base64')}`;
     }
     const user = await User.findByIdAndUpdate(userId, updateData, {
       new: true,

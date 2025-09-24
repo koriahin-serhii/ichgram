@@ -5,6 +5,7 @@ import userRouters from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import commentRoutes from './routes/commentRoutes.js';
 import likeRoutes from './routes/likeRoutes.js';
+import searchRouters from './routes/searchRoutes.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -31,6 +32,7 @@ app.use('/api/user', userRouters);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/likes', likeRoutes);
+app.use('/api/search', searchRouters);
 
 app.listen(PORT, async () => {
   try {

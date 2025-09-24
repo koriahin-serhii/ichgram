@@ -3,6 +3,8 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import userRouters from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
+import commentRoutes from './routes/commentRoutes.js';
+import likeRoutes from './routes/likeRoutes.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -27,6 +29,8 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRouters);
 app.use('/api/posts', postRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/likes', likeRoutes);
 
 app.listen(PORT, async () => {
   try {

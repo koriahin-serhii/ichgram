@@ -1,7 +1,11 @@
 import { Request, Response } from 'express';
 import PostModel from '../models/postModel.js';
 import { Types } from 'mongoose';
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -63,12 +67,14 @@ export const createPost = async (req: AuthenticatedRequest, res: Response) => {
     const bucketName = process.env.S3_BUCKET!;
     const key = Date.now() + '-' + file.originalname;
 
-    await s3.send(new PutObjectCommand({
-      Bucket: bucketName,
-      Key: key,
-      Body: file.buffer,
-      ContentType: file.mimetype,
-    }));
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+      })
+    );
 
     const imageUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
     const post = new PostModel({ description, imageUrl, author });
@@ -93,11 +99,21 @@ export const deletePost = async (req: AuthenticatedRequest, res: Response) => {
       try {
         const oldUrl = post.imageUrl;
         const urlParts = oldUrl.split('/');
-        const oldKey = urlParts.slice(3).join('/').replace(`${process.env.S3_BUCKET!}.s3.${process.env.AWS_REGION}.amazonaws.com/`, '');
-        await s3.send(new DeleteObjectCommand({
-          Bucket: process.env.S3_BUCKET!,
-          Key: oldKey,
-        }));
+        const oldKey = urlParts
+          .slice(3)
+          .join('/')
+          .replace(
+            `${process.env.S3_BUCKET!}.s3.${
+              process.env.AWS_REGION
+            }.amazonaws.com/`,
+            ''
+          );
+        await s3.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.S3_BUCKET!,
+            Key: oldKey,
+          })
+        );
       } catch (err) {
         console.warn('Failed to delete image from S3:', err);
       }
@@ -127,11 +143,21 @@ export const updatePost = async (req: AuthenticatedRequest, res: Response) => {
         try {
           const oldUrl = post.imageUrl;
           const urlParts = oldUrl.split('/');
-          const oldKey = urlParts.slice(3).join('/').replace(`${process.env.S3_BUCKET!}.s3.${process.env.AWS_REGION}.amazonaws.com/`, '');
-          await s3.send(new DeleteObjectCommand({
-            Bucket: process.env.S3_BUCKET!,
-            Key: oldKey,
-          }));
+          const oldKey = urlParts
+            .slice(3)
+            .join('/')
+            .replace(
+              `${process.env.S3_BUCKET!}.s3.${
+                process.env.AWS_REGION
+              }.amazonaws.com/`,
+              ''
+            );
+          await s3.send(
+            new DeleteObjectCommand({
+              Bucket: process.env.S3_BUCKET!,
+              Key: oldKey,
+            })
+          );
         } catch (err) {
           // Not critical if failed to delete old file
           console.warn('Failed to delete old image from S3:', err);
@@ -140,12 +166,14 @@ export const updatePost = async (req: AuthenticatedRequest, res: Response) => {
       // Upload new image
       const bucketName = process.env.S3_BUCKET!;
       const key = Date.now() + '-' + file.originalname;
-      await s3.send(new PutObjectCommand({
-        Bucket: bucketName,
-        Key: key,
-        Body: file.buffer,
-        ContentType: file.mimetype,
-      }));
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: bucketName,
+          Key: key,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+        })
+      );
       post.imageUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
     }
     await post.save();

@@ -13,6 +13,7 @@ import messageRoutes from './routes/messageRoutes.js';
 import { Server as SocketIOServer } from 'socket.io';
 import { setupSocketIO } from './utils/socket.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -22,6 +23,7 @@ const server: http.Server = http.createServer(app);
 const PORT: string | number = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use(
   cors({

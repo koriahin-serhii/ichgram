@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel.js';
 import { Types } from 'mongoose';
+import {
+  uploadProfileImageToS3,
+  deleteProfileImageFromS3,
+} from '../utils/s3.js';
 
 interface AuthenticatedRequest extends Request {
   user?: string | Types.ObjectId;
@@ -39,9 +43,17 @@ export const updateProfile = async (
     if (name) updateData.name = name;
     if (bio) updateData.bio = bio;
     if (req.file) {
-      updateData.profileImage = `data:${
-        req.file.mimetype
-      };base64,${req.file.buffer.toString('base64')}`;
+      // Get the user to delete the old avatar
+      const user = await User.findById(userId);
+      if (user && user.profileImage && user.profileImage.startsWith('http')) {
+        await deleteProfileImageFromS3(user.profileImage);
+      }
+      // Upload new avatar to S3
+      updateData.profileImage = await uploadProfileImageToS3(
+        req.file.buffer,
+        req.file.mimetype,
+        String(userId)
+      );
     }
     const user = await User.findByIdAndUpdate(userId, updateData, {
       new: true,

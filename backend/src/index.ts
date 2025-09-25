@@ -7,6 +7,7 @@ import commentRoutes from './routes/commentRoutes.js';
 import likeRoutes from './routes/likeRoutes.js';
 import searchRouters from './routes/searchRoutes.js';
 import followRoutes from './routes/followRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -35,6 +36,7 @@ app.use('/api/comments', commentRoutes);
 app.use('/api/likes', likeRoutes);
 app.use('/api/search', searchRouters);
 app.use('/api/follow', followRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.listen(PORT, async () => {
   try {

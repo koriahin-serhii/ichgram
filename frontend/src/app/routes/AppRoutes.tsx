@@ -1,0 +1,47 @@
+import { Routes, Route } from 'react-router-dom';
+import Home from '@pages/Home/Home';
+import Explore from '@pages/Explore/Explore';
+import Messages from '@pages/Messages/Messages';
+import Notifications from '@pages/Notifications/Notifications';
+import Search from '@pages/Search/Search';
+import MyProfile from '@pages/Profile/MyProfile/MyProfile';
+import UserProfile from '@pages/Profile/UserProfile/UserProfile';
+import EditProfile from '@pages/Profile/EditProfile/EditProfile';
+import PostDetail from '@pages/Post/PostDetail/PostDetail';
+import AddPost from '@pages/Post/AddPost/AddPost';
+import EditPost from '@pages/Post/EditPost/EditPost';
+import Login from '@pages/Auth/Login/Login';
+import SignUp from '@pages/Auth/SignUp/SignUp';
+import Reset from '@pages/Auth/Reset/Reset';
+import NotFound from '@pages/NotFound/NotFound';
+
+export default function AppRoutes() {
+  return (
+    <Routes>
+      {/* Public/Auth */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/reset" element={<Reset />} />
+
+      {/* Main */}
+      <Route path="/" element={<Home />} />
+      <Route path="/explore" element={<Explore />} />
+      <Route path="/messages" element={<Messages />} />
+      <Route path="/notifications" element={<Notifications />} />
+      <Route path="/search" element={<Search />} />
+
+      {/* Profile */}
+      <Route path="/me" element={<MyProfile />} />
+      <Route path="/u/:username" element={<UserProfile />} />
+      <Route path="/settings/profile" element={<EditProfile />} />
+
+      {/* Posts */}
+      <Route path="/post/new" element={<AddPost />} />
+      <Route path="/post/:id" element={<PostDetail />} />
+      <Route path="/post/:id/edit" element={<EditPost />} />
+
+      {/* 404 */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}

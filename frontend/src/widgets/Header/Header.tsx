@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import Logo from '@assets/logos/logo.svg?react';
 import useAuth from '@app/providers/useAuth';
 import styles from './Header.module.css';
-import ThemeToggle from '@features/theme-toggle/ui/ThemeToggle/ThemeToggle';
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -30,7 +29,6 @@ export default function Header() {
           <Link to="/signup">Sign up</Link>
         </>
       )}
-      <ThemeToggle />
     </nav>
   );
 }

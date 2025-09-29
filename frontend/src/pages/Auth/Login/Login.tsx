@@ -1,6 +1,6 @@
 import styles from './login.module.css';
 import { Link, useNavigate } from 'react-router-dom';
-import LoginForm from '@features/auth/ui/LoginForm/LoginForm';
+import LoginForm from '@components/Auth/LoginForm/LoginForm';
 
 export default function Login() {
   const navigate = useNavigate();

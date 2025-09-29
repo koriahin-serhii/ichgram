@@ -1,6 +1,6 @@
 import styles from './signup.module.css';
 import { Link, useNavigate } from 'react-router-dom';
-import SignUpForm from '@features/auth/ui/SignUpForm/SignUpForm';
+import SignUpForm from '@components/Auth/SignUpForm/SignUpForm';
 
 export default function SignUp() {
   const navigate = useNavigate();

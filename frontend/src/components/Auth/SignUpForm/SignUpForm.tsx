@@ -26,7 +26,8 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
     if (!fullName) next.push('Full name is required');
     if (!name) next.push('Username is required');
     if (!password) next.push('Password is required');
-    if (password && password.length < 6) next.push('Password must be at least 6 characters');
+    if (password && password.length < 6)
+      next.push('Password must be at least 6 characters');
     if (password !== confirm) next.push('Passwords do not match');
     setErrors(next);
     if (next.length) return;
@@ -40,23 +41,57 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
     }
   };
 
-  const usernameTaken = submitError?.toLowerCase().includes('username') || submitError?.toLowerCase().includes('email or username') || false;
+  const usernameTaken =
+    submitError?.toLowerCase().includes('username') ||
+    submitError?.toLowerCase().includes('email or username') ||
+    false;
 
   return (
     <div className={styles.card}>
-      <div className={styles.logoWrap}><Logo className={styles.logo} /></div>
-      <div className={styles.subtitle}>Sign up to see photos and videos from your friends.</div>
+      <div className={styles.logoWrap}>
+        <Logo className={styles.logo} />
+      </div>
+      <div className={styles.subtitle}>
+        Sign up to see photos and videos from your friends.
+      </div>
       <form className={styles.form} onSubmit={onSubmit}>
-        <TextField type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <TextField placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+        <TextField
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          placeholder="Full Name"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+        />
         <div>
-          <TextField placeholder="Username" value={name} onChange={(e) => setName(e.target.value)} />
+          <TextField
+            placeholder="Username"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
           {(errors.includes('Username is required') || usernameTaken) && (
-            <div className={styles.fieldError}>{usernameTaken ? 'This username is already taken.' : 'This username is required.'}</div>
+            <div className={styles.fieldError}>
+              {usernameTaken
+                ? 'This username is already taken.'
+                : 'This username is required.'}
+            </div>
           )}
         </div>
-        <TextField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-  <TextField type="password" placeholder="Confirm password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+        <TextField
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <TextField
+          type="password"
+          placeholder="Confirm password"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+        />
         {!!errors.length && !errors.includes('Username is required') && (
           <ul className={styles.errors}>
             {errors.map((er, i) => (
@@ -64,11 +99,15 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
             ))}
           </ul>
         )}
-        {!usernameTaken && submitError && <div className={styles.errors}>{submitError}</div>}
+        {!usernameTaken && submitError && (
+          <div className={styles.errors}>{submitError}</div>
+        )}
         <p className={styles.terms}>
-          People who use our service may have uploaded your contact information to Ichgram. Learn More.
+          People who use our service may have uploaded your contact information
+          to Ichgram. Learn More.
           <br />
-          By signing up, you agree to our <b>Terms</b>, <b>Privacy Policy</b> and <b>Cookies Policy</b>.
+          By signing up, you agree to our <b>Terms</b>, <b>Privacy Policy</b>{' '}
+          and <b>Cookies Policy</b>.
         </p>
         <Button type="submit" block disabled={loading}>
           Sign up

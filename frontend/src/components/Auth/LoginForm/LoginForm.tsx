@@ -34,7 +34,9 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
 
   return (
     <div className={styles.card}>
-      <div className={styles.logoWrap}><Logo className={styles.logo} /></div>
+      <div className={styles.logoWrap}>
+        <Logo className={styles.logo} />
+      </div>
       <form className={styles.form} onSubmit={onSubmit}>
         <TextField
           placeholder="Username, or email"
@@ -51,8 +53,12 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
         <Button type="submit" block disabled={loading}>
           Log in
         </Button>
-        <div className={styles.separator}><span>OR</span></div>
-        <Link to="/reset" className={styles.forgot}>Forgot password?</Link>
+        <div className={styles.separator}>
+          <span>OR</span>
+        </div>
+        <Link to="/reset" className={styles.forgot}>
+          Forgot password?
+        </Link>
       </form>
     </div>
   );

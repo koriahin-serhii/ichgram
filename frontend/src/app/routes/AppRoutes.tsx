@@ -14,31 +14,37 @@ import Login from '@pages/Auth/Login/Login';
 import SignUp from '@pages/Auth/SignUp/SignUp';
 import Reset from '@pages/Auth/Reset/Reset';
 import NotFound from '@pages/NotFound/NotFound';
+import { RequireAuth, RedirectIfAuthed } from './RouteGuards';
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Public/Auth */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/reset" element={<Reset />} />
+      {/* Public/Auth (blocked for authed users) */}
+      <Route element={<RedirectIfAuthed />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/reset" element={<Reset />} />
+      </Route>
 
-      {/* Main */}
-      <Route path="/" element={<Home />} />
-      <Route path="/explore" element={<Explore />} />
-      <Route path="/messages" element={<Messages />} />
-      <Route path="/notifications" element={<Notifications />} />
-      <Route path="/search" element={<Search />} />
+      {/* Protected */}
+      <Route element={<RequireAuth />}>
+        {/* Main */}
+        <Route path="/" element={<Home />} />
+        <Route path="/explore" element={<Explore />} />
+        <Route path="/messages" element={<Messages />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/search" element={<Search />} />
 
-      {/* Profile */}
-      <Route path="/me" element={<MyProfile />} />
-      <Route path="/u/:username" element={<UserProfile />} />
-      <Route path="/settings/profile" element={<EditProfile />} />
+        {/* Profile */}
+        <Route path="/me" element={<MyProfile />} />
+        <Route path="/u/:username" element={<UserProfile />} />
+        <Route path="/settings/profile" element={<EditProfile />} />
 
-      {/* Posts */}
-      <Route path="/post/new" element={<AddPost />} />
-      <Route path="/post/:id" element={<PostDetail />} />
-      <Route path="/post/:id/edit" element={<EditPost />} />
+        {/* Posts */}
+        <Route path="/post/new" element={<AddPost />} />
+        <Route path="/post/:id" element={<PostDetail />} />
+        <Route path="/post/:id/edit" element={<EditPost />} />
+      </Route>
 
       {/* 404 */}
       <Route path="*" element={<NotFound />} />

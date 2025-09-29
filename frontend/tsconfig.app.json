@@ -27,9 +27,14 @@
     /* Paths/Aliases */
     "baseUrl": "./src",
     "paths": {
+      "@api": ["shared/api/index.ts"],
       "@app/*": ["app/*"],
       "@shared/*": ["shared/*"],
+      "@api/*": ["shared/api/*"],
+      "@assets/*": ["shared/assets/*"],
       "@features/*": ["features/*"],
+      "@widgets/*": ["widgets/*"],
+      "@entities/*": ["entities/*"],
       "@pages/*": ["pages/*"],
       "@layouts/*": ["layouts/*"]
     }

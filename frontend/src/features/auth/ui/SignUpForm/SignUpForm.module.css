@@ -1,0 +1,14 @@
+.form {
+  display: grid;
+  gap: 12px;
+}
+.errors {
+  color: #ef4444;
+  font-size: 13px;
+  display: grid;
+  gap: 6px;
+}
+.actions {
+  display: grid;
+  gap: 8px;
+}

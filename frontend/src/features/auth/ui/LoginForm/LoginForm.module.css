@@ -1,12 +1,38 @@
-.form {
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 16px;
+  width: 100%;
+  max-width: 350px;
+  background: #fff;
   display: grid;
   gap: 12px;
 }
+.logoWrap {
+  display: flex;
+  justify-content: center;
+}
+.logo { height: 28px; }
+.form {
+  display: grid;
+  gap: 10px;
+}
 .error {
   color: #ef4444;
-  font-size: 13px;
+  font-size: 12px;
 }
-.actions {
-  display: grid;
+.separator {
+  display: flex;
+  align-items: center;
+  color: #6b7280;
+  font-size: 12px;
   gap: 8px;
 }
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1 1 auto;
+  height: 1px;
+  background: #e5e7eb;
+}
+.forgot { text-align: center; color: var(--primary); font-size: 12px; }

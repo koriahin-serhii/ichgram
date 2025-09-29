@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import FormCard from '@shared/components/FormCard/FormCard';
 import TextField from '@shared/components/TextField/TextField';
 import Button from '@shared/components/Button/Button';
 import useAuth from '@app/providers/useAuth';
+import Logo from '@assets/logos/logo.svg?react';
+import { Link } from 'react-router-dom';
 import styles from './LoginForm.module.css';
 
 export type LoginFormProps = {
@@ -32,29 +33,27 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
   };
 
   return (
-    <FormCard title="Log in" subtitle="Welcome back to Ichgram">
+    <div className={styles.card}>
+      <div className={styles.logoWrap}><Logo className={styles.logo} /></div>
       <form className={styles.form} onSubmit={onSubmit}>
         <TextField
-          label="Email"
-          type="email"
-          placeholder="you@example.com"
+          placeholder="Username, or email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <TextField
-          label="Password"
           type="password"
-          placeholder="••••••••"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         {error && <div className={styles.error}>{error}</div>}
-        <div className={styles.actions}>
-          <Button type="submit" block disabled={loading}>
-            Log in
-          </Button>
-        </div>
+        <Button type="submit" block disabled={loading}>
+          Log in
+        </Button>
+        <div className={styles.separator}><span>OR</span></div>
+        <Link to="/reset" className={styles.forgot}>Forgot password?</Link>
       </form>
-    </FormCard>
+    </div>
   );
 }

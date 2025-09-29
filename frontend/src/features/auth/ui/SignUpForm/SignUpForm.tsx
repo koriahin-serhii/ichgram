@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import FormCard from '@shared/components/FormCard/FormCard';
 import TextField from '@shared/components/TextField/TextField';
 import Button from '@shared/components/Button/Button';
 import useAuth from '@app/providers/useAuth';
+import Logo from '@assets/logos/logo.svg?react';
 import styles from './SignUpForm.module.css';
 
 export type SignUpFormProps = {
@@ -22,12 +22,11 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const next: string[] = [];
-    if (!name) next.push('Username is required');
-    if (!fullName) next.push('Full name is required');
     if (!email) next.push('Email is required');
+    if (!fullName) next.push('Full name is required');
+    if (!name) next.push('Username is required');
     if (!password) next.push('Password is required');
-    if (password && password.length < 6)
-      next.push('Password must be at least 6 characters');
+    if (password && password.length < 6) next.push('Password must be at least 6 characters');
     if (password !== confirm) next.push('Passwords do not match');
     setErrors(next);
     if (next.length) return;
@@ -41,56 +40,40 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
     }
   };
 
+  const usernameTaken = submitError?.toLowerCase().includes('username') || submitError?.toLowerCase().includes('email or username') || false;
+
   return (
-    <FormCard title="Sign up" subtitle="Create your Ichgram account">
+    <div className={styles.card}>
+      <div className={styles.logoWrap}><Logo className={styles.logo} /></div>
+      <div className={styles.subtitle}>Sign up to see photos and videos from your friends.</div>
       <form className={styles.form} onSubmit={onSubmit}>
-        <TextField
-          label="Username"
-          placeholder="john"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <TextField
-          label="Full name"
-          placeholder="John Doe"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-        />
-        <TextField
-          label="Email"
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <TextField
-          label="Password"
-          type="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <TextField
-          label="Confirm password"
-          type="password"
-          placeholder="••••••••"
-          value={confirm}
-          onChange={(e) => setConfirm(e.target.value)}
-        />
-        {!!errors.length && (
+        <TextField type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <TextField placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+        <div>
+          <TextField placeholder="Username" value={name} onChange={(e) => setName(e.target.value)} />
+          {(errors.includes('Username is required') || usernameTaken) && (
+            <div className={styles.fieldError}>{usernameTaken ? 'This username is already taken.' : 'This username is required.'}</div>
+          )}
+        </div>
+        <TextField type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+  <TextField type="password" placeholder="Confirm password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+        {!!errors.length && !errors.includes('Username is required') && (
           <ul className={styles.errors}>
             {errors.map((er, i) => (
               <li key={i}>{er}</li>
             ))}
           </ul>
         )}
-        <div className={styles.actions}>
-          {submitError && <div className={styles.errors}>{submitError}</div>}
-          <Button type="submit" block disabled={loading}>
-            Create account
-          </Button>
-        </div>
+        {!usernameTaken && submitError && <div className={styles.errors}>{submitError}</div>}
+        <p className={styles.terms}>
+          People who use our service may have uploaded your contact information to Ichgram. Learn More.
+          <br />
+          By signing up, you agree to our <b>Terms</b>, <b>Privacy Policy</b> and <b>Cookies Policy</b>.
+        </p>
+        <Button type="submit" block disabled={loading}>
+          Sign up
+        </Button>
       </form>
-    </FormCard>
+    </div>
   );
 }

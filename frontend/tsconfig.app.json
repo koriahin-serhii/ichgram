@@ -29,7 +29,7 @@
     "paths": {
       "@app/*": ["app/*"],
       "@shared/*": ["shared/*"],
-      "@features/*": ["features/*"],
+      "@components/*": ["components/*"],
       "@pages/*": ["pages/*"],
       "@layouts/*": ["layouts/*"]
     }

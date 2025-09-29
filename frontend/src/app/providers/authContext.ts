@@ -12,7 +12,7 @@ export type AuthContextValue = {
   loading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string) => Promise<void>;
+  register: (name: string, email: string, password: string, fullName: string) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (u: AuthUser | null) => void;
 };

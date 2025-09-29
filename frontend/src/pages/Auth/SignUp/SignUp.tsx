@@ -7,7 +7,7 @@ export default function SignUp() {
 
   return (
     <div className={styles.screen}>
-      <SignUpForm onSuccess={() => navigate('/login')} />
+      <SignUpForm onSuccess={() => navigate('/')} />
       <div className={styles.bottomLink}>
         Already have an account? <Link to="/login">Log in</Link>
       </div>

@@ -2,7 +2,7 @@ import api from './client';
 import type { AuthResponse } from './types';
 
 export type LoginPayload = { email: string; password: string };
-export type RegisterPayload = { name: string; email: string; password: string };
+export type RegisterPayload = { name: string; email: string; password: string; fullName: string };
 
 export async function login(data: LoginPayload) {
   const res = await api.post<AuthResponse>('/auth/login', data);

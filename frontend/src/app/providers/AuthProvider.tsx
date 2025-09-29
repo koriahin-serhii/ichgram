@@ -27,10 +27,14 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     },
-    async register(name: string, email: string, password: string) {
+    async register(name: string, email: string, password: string, fullName: string) {
       setLoading(true); setError(null);
       try {
-        await AuthAPI.register({ name, email, password });
+        await AuthAPI.register({ name, email, password, fullName });
+        // Auto-login right after successful registration
+        const res = await AuthAPI.login({ email, password });
+        setUser(res.user ?? null);
+        await queryClient.invalidateQueries({ predicate: () => true });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : 'Registration failed';
         setError(msg);

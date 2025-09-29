@@ -11,6 +11,7 @@ export type SignUpFormProps = {
 
 export default function SignUpForm({ onSuccess }: SignUpFormProps) {
   const [name, setName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -21,16 +22,18 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const next: string[] = [];
-    if (!name) next.push('Name is required');
+    if (!name) next.push('Username is required');
+    if (!fullName) next.push('Full name is required');
     if (!email) next.push('Email is required');
     if (!password) next.push('Password is required');
-    if (password && password.length < 6) next.push('Password must be at least 6 characters');
+    if (password && password.length < 6)
+      next.push('Password must be at least 6 characters');
     if (password !== confirm) next.push('Passwords do not match');
     setErrors(next);
     if (next.length) return;
     setSubmitError(null);
     try {
-      await register(name, email, password);
+      await register(name, email, password, fullName);
       onSuccess?.();
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : 'Registration failed';
@@ -41,10 +44,39 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
   return (
     <FormCard title="Sign up" subtitle="Create your Ichgram account">
       <form className={styles.form} onSubmit={onSubmit}>
-        <TextField label="Name" placeholder="John Doe" value={name} onChange={(e) => setName(e.target.value)} />
-        <TextField label="Email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <TextField label="Password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <TextField label="Confirm password" type="password" placeholder="••••••••" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+        <TextField
+          label="Username"
+          placeholder="john"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <TextField
+          label="Full name"
+          placeholder="John Doe"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+        />
+        <TextField
+          label="Email"
+          type="email"
+          placeholder="you@example.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          label="Password"
+          type="password"
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <TextField
+          label="Confirm password"
+          type="password"
+          placeholder="••••••••"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+        />
         {!!errors.length && (
           <ul className={styles.errors}>
             {errors.map((er, i) => (

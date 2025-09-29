@@ -2,7 +2,7 @@ import { useState } from 'react';
 import TextField from '@shared/components/TextField/TextField';
 import Button from '@shared/components/Button/Button';
 import useAuth from '@app/providers/useAuth';
-import Logo from '@assets/logos/logo.svg?react';
+import Logo from '@assets/logos/logo-auth.svg?react';
 import { Link } from 'react-router-dom';
 import styles from './LoginForm.module.css';
 

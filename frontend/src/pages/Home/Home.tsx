@@ -1,6 +1,6 @@
 import styles from './Home.module.css';
-import { useFeed } from '@entities/post/model/queries';
-import PostList from '@entities/post/ui/PostList/PostList';
+import { useFeed } from '@shared/api/posts';
+import PostList from '@components/PostList/PostList';
 import type { Paginated } from '@shared/api/types';
 
 function isPaginated<T>(v: unknown): v is Paginated<T> {

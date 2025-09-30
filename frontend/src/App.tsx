@@ -4,7 +4,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import AppRoutes from '@app/routes/AppRoutes';
 import MainLayout from '@layouts/MainLayout';
 import AuthProvider from '@app/providers/AuthProvider';
-import { queryClient } from '@shared/query/client';
+import { queryClient } from '@app/config/queryClient';
 
 export default function App() {
   return (

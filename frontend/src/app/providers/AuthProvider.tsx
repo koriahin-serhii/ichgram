@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { AuthAPI } from '@api';
-import { queryClient } from '@shared/query/client';
+import { queryClient } from '@app/config/queryClient';
 import { AuthContext, type AuthUser, type AuthContextValue } from './authContext';
 
 export default function AuthProvider({ children }: { children: ReactNode }) {

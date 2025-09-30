@@ -12,7 +12,6 @@ export default defineConfig({
       '@api': path.resolve(__dirname, 'src/shared/api'),
       '@assets': path.resolve(__dirname, 'src/shared/assets'),
       '@components': path.resolve(__dirname, 'src/components'),
-      '@entities': path.resolve(__dirname, 'src/entities'),
       '@pages': path.resolve(__dirname, 'src/pages'),
       '@layouts': path.resolve(__dirname, 'src/layouts'),
     },

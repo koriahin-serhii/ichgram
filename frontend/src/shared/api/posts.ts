@@ -10,17 +10,17 @@ export const postKeys = {
 };
 
 export async function getUserPosts(userId: ID) {
-  const res = await api.get(`/posts/user/${userId}`);
+  const res = await api.get(`/api/posts/user/${userId}`);
   return res.data;
 }
 
 export async function getFeed() {
-  const res = await api.get('/posts');
+  const res = await api.get('/api/posts/');
   return res.data;
 }
 
 export async function getPost(id: ID) {
-  const res = await api.get(`/posts/${id}`);
+  const res = await api.get(`/api/posts/${id}`);
   return res.data;
 }
 
@@ -28,12 +28,12 @@ export async function createPost(image: File, description?: string) {
   const form = new FormData();
   form.append('image', image);
   if (description) form.append('description', description);
-  const res = await api.post('/posts', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+  const res = await api.post('/api/posts/', form, { headers: { 'Content-Type': 'multipart/form-data' } });
   return res.data;
 }
 
 export async function deletePost(id: ID) {
-  const res = await api.delete(`/posts/${id}`);
+  const res = await api.delete(`/api/posts/${id}`);
   return res.data;
 }
 
@@ -41,7 +41,7 @@ export async function updatePost(id: ID, description?: string, image?: File) {
   const form = new FormData();
   if (description) form.append('description', description);
   if (image) form.append('image', image);
-  const res = await api.put(`/posts/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+  const res = await api.put(`/api/posts/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
   return res.data;
 }
 

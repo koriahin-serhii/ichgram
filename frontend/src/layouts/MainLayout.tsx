@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import Header from '@widgets/Header/Header';
+import Header from '@components/Header/Header';
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   const location = useLocation();

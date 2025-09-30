@@ -33,7 +33,6 @@
       "@api/*": ["shared/api/*"],
       "@assets/*": ["shared/assets/*"],
       "@components/*": ["components/*"],
-      "@widgets/*": ["widgets/*"],
       "@entities/*": ["entities/*"],
       "@pages/*": ["pages/*"],
       "@layouts/*": ["layouts/*"]

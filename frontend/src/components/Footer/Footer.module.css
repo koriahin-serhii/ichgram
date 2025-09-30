@@ -1,0 +1,47 @@
+.footer {
+  background: #fff;
+  border-top: 1px solid #eee;
+  padding: 20px 0;
+  margin-top: auto;
+}
+
+.content {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 16px;
+  text-align: center;
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.link {
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: #333;
+}
+
+.copyright {
+  color: #999;
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .nav {
+    gap: 16px;
+  }
+
+  .link {
+    font-size: 13px;
+  }
+}

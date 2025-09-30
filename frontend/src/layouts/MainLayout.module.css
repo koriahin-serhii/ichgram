@@ -8,3 +8,13 @@
   padding: 16px;
   flex: 1;
 }
+
+.main.withSidebar {
+  margin-left: 245px;
+}
+
+@media (max-width: 1264px) {
+  .main.withSidebar {
+    margin-left: 72px;
+  }
+}

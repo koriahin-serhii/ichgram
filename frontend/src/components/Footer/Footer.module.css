@@ -1,8 +1,9 @@
 .footer {
   background: #fff;
-  border-top: 1px solid #eee;
+  /* border-top: 1px solid #eee; */
   padding: 20px 0;
   margin-top: auto;
+  margin-bottom: 60px;
 }
 
 .content {
@@ -16,7 +17,7 @@
   display: flex;
   justify-content: center;
   gap: 32px;
-  margin-bottom: 16px;
+  margin-bottom: 48px;
   flex-wrap: wrap;
 }
 

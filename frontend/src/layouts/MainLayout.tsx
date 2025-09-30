@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
-import Header from '@components/Header/Header';
+import Sidebar from '@components/Sidebar/Sidebar';
 import Footer from '@components/Footer/Footer';
 import styles from './MainLayout.module.css';
 
@@ -11,8 +11,8 @@ export default function MainLayout({ children }: { children: ReactNode }) {
   );
   return (
     <div className={styles.container}>
-      {!isAuthPage && <Header />}
-      <main className={styles.main}>{children}</main>
+      {!isAuthPage && <Sidebar />}
+      <main className={`${styles.main} ${!isAuthPage ? styles.withSidebar : ''}`}>{children}</main>
       {!isAuthPage && <Footer />}
     </div>
   );

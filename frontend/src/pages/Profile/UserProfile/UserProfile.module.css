@@ -1,0 +1,26 @@
+.container {
+  max-width: 935px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.loading,
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  font-size: 16px;
+}
+
+.loading {
+  color: #8e8e8e;
+}
+
+.error {
+  color: #ed4956;
+}
+
+.posts {
+  margin-top: 20px;
+}

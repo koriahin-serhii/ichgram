@@ -36,9 +36,9 @@ export default function AppRoutes() {
         <Route path="/search" element={<Search />} />
 
         {/* Profile */}
-        <Route path="/me" element={<MyProfile />} />
+        <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/u/:username" element={<UserProfile />} />
-        <Route path="/settings/profile" element={<EditProfile />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
 
         {/* Posts */}
         <Route path="/post/new" element={<AddPost />} />

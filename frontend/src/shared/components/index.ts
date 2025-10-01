@@ -1,2 +1,3 @@
-export { default as Image } from './Image/Image';
-export { default as ProfileImage } from './ProfileImage/ProfileImage';
+export { default as UserAvatar } from './UserAvatar';
+export { default as PostGrid } from './PostGrid';
+export { default as ProfileHeader } from './ProfileHeader';

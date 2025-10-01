@@ -94,7 +94,7 @@ export default function Sidebar() {
         <div className={styles.profile}>
           {user ? (
             <>
-              <Link to="/profile" className={styles.navItem}>
+              <Link to="/my-profile" className={styles.navItem}>
                 <ProfileIcon className={styles.icon} />
                 <span className={styles.label}>Profile</span>
               </Link>

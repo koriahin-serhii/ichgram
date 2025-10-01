@@ -1,0 +1,32 @@
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.loading,
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  font-size: 16px;
+}
+
+.loading {
+  color: #8e8e8e;
+}
+
+.error {
+  color: #ed4956;
+}
+
+.divider {
+  height: 1px;
+  background: #dbdbdb;
+  margin: 40px 0 20px 0;
+}
+
+.posts {
+  margin-top: 20px;
+}

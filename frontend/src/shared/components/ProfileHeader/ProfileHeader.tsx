@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import UserAvatar from './UserAvatar';
+import UserAvatar from '../UserAvatar/UserAvatar';
 import styles from './ProfileHeader.module.css';
-import type { UserProfile } from '../api/users';
+import type { UserProfile } from '../../api/users';
 
 interface ProfileHeaderProps {
   user: UserProfile;

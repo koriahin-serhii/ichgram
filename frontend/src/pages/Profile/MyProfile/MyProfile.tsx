@@ -2,7 +2,6 @@ import useAuth from '@app/providers/useAuth';
 import { useMyProfile } from '@shared/api/users';
 import { useUserPosts } from '@shared/api/posts';
 import { ProfileHeader, PostGrid } from '@shared/components';
-import { mockUser, mockPosts } from '@shared/utils/mockData';
 import styles from './MyProfile.module.css';
 
 export default function MyProfile() {
@@ -18,10 +17,6 @@ export default function MyProfile() {
     error: postsError,
   } = useUserPosts(currentUser?.id || '');
 
-  // Используем моковые данные если есть ошибка или нет данных
-  const displayUser = profileError || !profileData ? mockUser : profileData;
-  const displayPosts = postsError || posts.length === 0 ? mockPosts : posts;
-
   if (profileLoading) {
     return (
       <div className={styles.container}>
@@ -30,12 +25,26 @@ export default function MyProfile() {
     );
   }
 
+  if (profileError || !profileData) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>
+          Failed to load profile. Please try again.
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
-      <ProfileHeader user={displayUser} isOwnProfile={true} />
+      <ProfileHeader user={profileData} isOwnProfile={true} />
 
       <div className={styles.posts}>
-        <PostGrid posts={displayPosts} isLoading={postsLoading} />
+        {postsError ? (
+          <div className={styles.error}>Failed to load posts.</div>
+        ) : (
+          <PostGrid posts={posts} isLoading={postsLoading} />
+        )}
       </div>
     </div>
   );

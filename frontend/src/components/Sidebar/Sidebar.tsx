@@ -19,7 +19,12 @@ import NotificationActiveIcon from '@assets/icons/notification-active.svg?react'
 import CreateIcon from '@assets/icons/create.svg?react';
 import ProfileIcon from '@assets/icons/profile.svg?react';
 
-export default function Sidebar() {
+interface SidebarProps {
+  isSearchOpen: boolean;
+  onSearchClick: () => void;
+}
+
+export default function Sidebar({ isSearchOpen, onSearchClick }: SidebarProps) {
   const { user, logout } = useAuth();
   const location = useLocation();
 
@@ -31,36 +36,42 @@ export default function Sidebar() {
       label: 'Home',
       icon: HomeIcon,
       activeIcon: HomeActiveIcon,
+      onClick: undefined,
     },
     {
-      path: '/search',
+      path: '#',
       label: 'Search',
       icon: SearchIcon,
       activeIcon: SearchActiveIcon,
+      onClick: onSearchClick,
     },
     {
       path: '/explore',
       label: 'Explore',
       icon: ExploreIcon,
       activeIcon: ExploreActiveIcon,
+      onClick: undefined,
     },
     {
       path: '/messages',
       label: 'Messages',
       icon: MessagesIcon,
       activeIcon: MessagesActiveIcon,
+      onClick: undefined,
     },
     {
       path: '/notifications',
       label: 'Notifications',
       icon: NotificationIcon,
       activeIcon: NotificationActiveIcon,
+      onClick: undefined,
     },
     {
       path: '/create',
       label: 'Create',
       icon: CreateIcon,
       activeIcon: CreateIcon,
+      onClick: undefined,
     },
   ];
 
@@ -75,8 +86,21 @@ export default function Sidebar() {
 
         <nav className={styles.nav}>
           {navItems.map((item) => {
-            const active = isActive(item.path);
+            const active = isActive(item.path) || (item.label === 'Search' && isSearchOpen);
             const IconComponent = active ? item.activeIcon : item.icon;
+
+            if (item.onClick) {
+              return (
+                <button
+                  key={item.path}
+                  onClick={item.onClick}
+                  className={`${styles.navItem} ${active ? styles.active : ''}`}
+                >
+                  <IconComponent className={styles.icon} />
+                  <span className={styles.label}>{item.label}</span>
+                </button>
+              );
+            }
 
             return (
               <Link

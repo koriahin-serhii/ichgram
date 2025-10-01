@@ -2,7 +2,6 @@ import { useParams } from 'react-router-dom';
 import { useUserProfile } from '@shared/api/users';
 import { useUserPosts } from '@shared/api/posts';
 import { ProfileHeader, PostGrid } from '@shared/components';
-import { mockUser, mockPosts } from '@shared/utils/mockData';
 import styles from './UserProfile.module.css';
 
 export default function UserProfile() {
@@ -13,10 +12,6 @@ export default function UserProfile() {
   const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile(username || '');
   const { data: posts = [], isLoading: postsLoading, error: postsError } = useUserPosts(username || '');
 
-  // Используем моковые данные если есть ошибка или нет данных
-  const displayUser = profileError || !profileData ? { ...mockUser, isFollowing: true } : profileData;
-  const displayPosts = postsError || posts.length === 0 ? mockPosts : posts;
-
   if (profileLoading) {
     return (
       <div className={styles.container}>
@@ -25,20 +20,30 @@ export default function UserProfile() {
     );
   }
 
+  if (profileError || !profileData) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.error}>
+          Profile not found or failed to load.
+        </div>
+      </div>
+    );
+  }
+
   const handleFollow = () => {
-    console.log('Follow user:', displayUser.name);
+    console.log('Follow user:', profileData.name);
     // TODO: Implement follow functionality
   };
 
   const handleUnfollow = () => {
-    console.log('Unfollow user:', displayUser.name);
+    console.log('Unfollow user:', profileData.name);
     // TODO: Implement unfollow functionality
   };
 
   return (
     <div className={styles.container}>
       <ProfileHeader 
-        user={displayUser} 
+        user={profileData} 
         isOwnProfile={false}
         onFollow={handleFollow}
         onUnfollow={handleUnfollow}
@@ -47,10 +52,14 @@ export default function UserProfile() {
       <div className={styles.divider} />
       
       <div className={styles.posts}>
-        <PostGrid 
-          posts={displayPosts} 
-          isLoading={postsLoading}
-        />
+        {postsError ? (
+          <div className={styles.error}>Failed to load posts.</div>
+        ) : (
+          <PostGrid 
+            posts={posts} 
+            isLoading={postsLoading}
+          />
+        )}
       </div>
     </div>
   );

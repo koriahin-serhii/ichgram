@@ -2,6 +2,7 @@
 export * as AuthAPI from './auth';
 export * as PostsAPI from './posts';
 export * as UsersAPI from './users';
+export * as SearchAPI from './search';
 
 // Экспортируем основные типы
 export type { ID } from './types';

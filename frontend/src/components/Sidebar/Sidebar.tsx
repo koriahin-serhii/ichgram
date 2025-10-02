@@ -22,9 +22,10 @@ import ProfileIcon from '@assets/icons/profile.svg?react';
 interface SidebarProps {
   isSearchOpen: boolean;
   onSearchClick: () => void;
+  onSearchClose: () => void;
 }
 
-export default function Sidebar({ isSearchOpen, onSearchClick }: SidebarProps) {
+export default function Sidebar({ isSearchOpen, onSearchClick, onSearchClose }: SidebarProps) {
   const { user, logout } = useAuth();
   const location = useLocation();
 
@@ -86,7 +87,10 @@ export default function Sidebar({ isSearchOpen, onSearchClick }: SidebarProps) {
 
         <nav className={styles.nav}>
           {navItems.map((item) => {
-            const active = isActive(item.path) || (item.label === 'Search' && isSearchOpen);
+            // When SearchSidebar is open, only Search is active
+            const active = isSearchOpen 
+              ? item.label === 'Search'
+              : isActive(item.path);
             const IconComponent = active ? item.activeIcon : item.icon;
 
             if (item.onClick) {
@@ -106,6 +110,7 @@ export default function Sidebar({ isSearchOpen, onSearchClick }: SidebarProps) {
               <Link
                 key={item.path}
                 to={item.path}
+                onClick={onSearchClose}
                 className={`${styles.navItem} ${active ? styles.active : ''}`}
               >
                 <IconComponent className={styles.icon} />
@@ -118,7 +123,7 @@ export default function Sidebar({ isSearchOpen, onSearchClick }: SidebarProps) {
         <div className={styles.profile}>
           {user ? (
             <>
-              <Link to="/my-profile" className={styles.navItem}>
+              <Link to="/my-profile" className={styles.navItem} onClick={onSearchClose}>
                 <ProfileIcon className={styles.icon} />
                 <span className={styles.label}>Profile</span>
               </Link>

@@ -23,6 +23,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         <Sidebar 
           isSearchOpen={isSearchOpen}
           onSearchClick={handleSearchOpen}
+          onSearchClose={handleSearchClose}
         />
       )}
       <main className={`${styles.main} ${!isAuthPage ? styles.withSidebar : ''}`}>

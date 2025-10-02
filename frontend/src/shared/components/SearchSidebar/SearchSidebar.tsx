@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useSearchUsers } from '@shared/api/search';
+import useAuth from '@app/providers/useAuth';
 import UserSearchResult from '../UsesrSearchResult/UserSearchResult';
 import styles from './SearchSidebar.module.css';
 
@@ -12,8 +13,15 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
   const [query, setQuery] = useState('');
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuth();
 
   const { data: searchResults = [], isLoading } = useSearchUsers(query);
+
+  // Filter out current user from search results
+  const filteredResults = useMemo(() => {
+    if (!user) return searchResults;
+    return searchResults.filter((searchUser) => searchUser._id !== user.id);
+  }, [searchResults, user]);
 
   // Focus input when sidebar opens
   useEffect(() => {
@@ -107,8 +115,8 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
             <div className={styles.results}>
               {isLoading ? (
                 <div className={styles.loading}>Searching...</div>
-              ) : searchResults.length > 0 ? (
-                searchResults.map((user) => (
+              ) : filteredResults.length > 0 ? (
+                filteredResults.map((user) => (
                   <UserSearchResult
                     key={user._id}
                     user={user}

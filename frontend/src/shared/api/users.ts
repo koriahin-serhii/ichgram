@@ -52,11 +52,12 @@ export const usersApi = {
   getUserStats: async (userId: ID): Promise<UserStats> => {
     try {
       // Fetch statistics from different endpoints
-      const [postsResponse, followersResponse, followingResponse] = await Promise.all([
-        client.get(`/api/posts/user/${userId}`),
-        client.get(`/api/follow/followers/${userId}`),
-        client.get(`/api/follow/following/${userId}`)
-      ]);
+      const [postsResponse, followersResponse, followingResponse] =
+        await Promise.all([
+          client.get(`/api/posts/user/${userId}`),
+          client.get(`/api/follow/followers/${userId}`),
+          client.get(`/api/follow/following/${userId}`),
+        ]);
 
       return {
         postsCount: postsResponse.data.length || 0,
@@ -88,7 +89,7 @@ export const usersApi = {
 const combineUserWithStats = async (userId: ID): Promise<UserProfile> => {
   const [user, stats] = await Promise.all([
     usersApi.getProfile(userId),
-    usersApi.getUserStats(userId)
+    usersApi.getUserStats(userId),
   ]);
 
   return {
@@ -109,7 +110,7 @@ export function useUserProfile(userId: ID) {
 
 export function useMyProfile() {
   const { user: currentUser } = useAuth();
-  
+
   return useQuery({
     queryKey: userKeys.me(),
     queryFn: async (): Promise<UserProfile> => {
@@ -136,14 +137,14 @@ interface UpdateProfileData {
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
-  
+
   return useMutation<User, Error, UpdateProfileData>({
     mutationFn: async (data: UpdateProfileData) => {
       const formData = new FormData();
       if (data.fullName) formData.append('fullName', data.fullName);
       if (data.bio) formData.append('bio', data.bio);
       if (data.profileImage) formData.append('profileImage', data.profileImage);
-      
+
       return usersApi.updateProfile(formData);
     },
     onSuccess: () => {

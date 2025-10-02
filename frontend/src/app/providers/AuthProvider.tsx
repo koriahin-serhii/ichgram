@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { AuthAPI } from '@api';
-import { queryClient } from '@app/config/queryClient';
 import { AuthContext, type AuthUser, type AuthContextValue } from './authContext';
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +53,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       }
     },
     setUser,
-  }), [user, loading, error]);
+  }), [user, loading, error, queryClient]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

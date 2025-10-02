@@ -1,4 +1,5 @@
 import client from './client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 // Types for notifications
 export interface Notification {
@@ -17,6 +18,12 @@ export interface Notification {
   updatedAt: string;
 }
 
+// Query keys
+export const notificationKeys = {
+  all: ['notifications'] as const,
+  list: () => [...notificationKeys.all, 'list'] as const,
+};
+
 // API functions for notifications
 export const notificationsApi = {
   // Get all notifications
@@ -31,3 +38,22 @@ export const notificationsApi = {
     return response.data;
   },
 };
+
+// React Query hooks
+export function useNotifications() {
+  return useQuery({
+    queryKey: notificationKeys.list(),
+    queryFn: notificationsApi.getNotifications,
+  });
+}
+
+export function useMarkNotificationsAsRead() {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ message: string }, Error>({
+    mutationFn: notificationsApi.markAllAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+    },
+  });
+}

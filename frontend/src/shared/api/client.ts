@@ -34,7 +34,8 @@ api.interceptors.response.use(
       status: err.response?.status,
       message: err.response?.data?.message || err.message,
     });
-    const message = err?.response?.data?.message || err.message || 'Request error';
+    const message =
+      err?.response?.data?.message || err.message || 'Request error';
     return Promise.reject(new Error(message));
   }
 );

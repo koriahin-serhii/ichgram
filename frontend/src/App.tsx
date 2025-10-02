@@ -8,8 +8,8 @@ import { queryClient } from '@app/config/queryClient';
 
 export default function App() {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
         <BrowserRouter>
           <MainLayout>
             <AppRoutes />
@@ -18,7 +18,7 @@ export default function App() {
         {import.meta.env.DEV && (
           <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
         )}
-      </QueryClientProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

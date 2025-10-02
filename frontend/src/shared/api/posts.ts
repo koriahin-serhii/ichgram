@@ -28,7 +28,9 @@ export async function createPost(image: File, description?: string) {
   const form = new FormData();
   form.append('image', image);
   if (description) form.append('description', description);
-  const res = await api.post('/api/posts/', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+  const res = await api.post('/api/posts/', form, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return res.data;
 }
 
@@ -41,7 +43,9 @@ export async function updatePost(id: ID, description?: string, image?: File) {
   const form = new FormData();
   if (description) form.append('description', description);
   if (image) form.append('image', image);
-  const res = await api.put(`/api/posts/${id}`, form, { headers: { 'Content-Type': 'multipart/form-data' } });
+  const res = await api.put(`/api/posts/${id}`, form, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
   return res.data;
 }
 
@@ -94,7 +98,8 @@ type UpdatePostVars = { id: ID; description?: string; image?: File };
 export function useUpdatePost() {
   const qc = useQueryClient();
   return useMutation<unknown, Error, UpdatePostVars>({
-    mutationFn: ({ id, description, image }) => updatePost(id, description, image),
+    mutationFn: ({ id, description, image }) =>
+      updatePost(id, description, image),
     onSuccess: (_, { id }) => {
       qc.invalidateQueries({ queryKey: postKeys.feed() });
       qc.invalidateQueries({ queryKey: postKeys.detail(id) });

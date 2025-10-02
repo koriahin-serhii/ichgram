@@ -2,22 +2,44 @@
 
 Modules for interacting with the backend API of the social media application. This includes authentication, posts, users, comments, follows, likes, messages, notifications, and search functionalities.
 
-## Structure
+## 📁 Structure
 
+### Core Files
+- `client.ts` - Axios HTTP client with interceptors
+- `types.ts` - Common TypeScript types (ID, etc.)
+- `index.ts` - Re-exports all APIs and hooks
+
+### API Modules (each contains API functions + React Query hooks)
 - `auth.ts` - Authentication (login, register, logout)
-- `posts.ts` - Posts (CRUD operations)
-- `users.ts` - Users (profiles)
-- `comments.ts` - Comments
-- `follow.ts` - Follows
-- `likes.ts` - Likes
-- `messages.ts` - Messages
-- `notifications.ts` - Notifications
-- `search.ts` - Search
-- `hooks.ts` - React Query hooks
-- `client.ts` - HTTP client
-- `types.ts` - Common types
+- `posts.ts` - Posts CRUD + hooks (`useFeed`, `usePost`, `useCreatePost`, etc.)
+- `users.ts` - User profiles + hooks (`useUserProfile`, `useMyProfile`, `useUpdateProfile`)
+- `comments.ts` - Comments + hooks (`useComments`, `useAddComment`)
+- `likes.ts` - Likes + hooks (`useLikes`, `useToggleLike`)
+- `follow.ts` - Follows + hooks (`useFollowers`, `useFollowing`, `useFollowUser`, `useUnfollowUser`, `useIsFollowing`)
+- `messages.ts` - Messages + hooks (`useMessages`, `useSendMessage`)
+- `notifications.ts` - Notifications + hooks (`useNotifications`, `useMarkNotificationsAsRead`)
+- `search.ts` - Search + hooks (`useSearchUsers`, `useExplorePosts`)
 
-## Backend Endpoints
+### Legacy
+- `hooks.ts` - **DEPRECATED** - Re-exports hooks from individual files for backward compatibility
+
+## 🎯 Usage
+
+### Option 1: Import from index (recommended)
+```typescript
+import { useFeed, usePost, useCreatePost } from '@api';
+import { useComments, useAddComment } from '@api';
+import { useFollowUser, useIsFollowing } from '@api';
+```
+
+### Option 2: Import from specific files
+```typescript
+import { useFeed, usePost } from '@api/posts';
+import { useComments, useAddComment } from '@api/comments';
+import { useFollowUser, useIsFollowing } from '@api/follow';
+```
+
+## 🔑 Backend Endpoints
 
 ### Auth (`/api/auth/`)
 - `POST /register` - Registration

@@ -1,34 +1,25 @@
-import styles from './Home.module.css';
+import { useMemo } from 'react';
 import { useFeed } from '@shared/api/posts';
-import PostList from '@components/PostList/PostList';
-import type { Paginated } from '@shared/api/types';
-
-function isPaginated<T>(v: unknown): v is Paginated<T> {
-  return !!v && typeof v === 'object' && 'items' in (v as Record<string, unknown>);
-}
+import FeedList from '@components/FeedList/FeedList';
+import useAuth from '@app/providers/useAuth';
+import type { Post } from '@shared/api/posts';
+import styles from './Home.module.css';
 
 export default function Home() {
-  const { data, isLoading, error } = useFeed();
-  const list = isPaginated<Record<string, unknown>>(data)
-    ? data.items
-    : Array.isArray(data)
-    ? data
-    : [];
+  const { user } = useAuth();
+  const { data: posts, isLoading, error } = useFeed();
+
+  // Get posts excluding own posts
+  const feedPosts = useMemo(() => {
+    if (!posts || !Array.isArray(posts)) return [];
+    return posts.filter(
+      (post: Post) => post.author?._id !== user?.id
+    );
+  }, [posts, user]);
 
   return (
     <div className={styles.wrapper}>
-      <h1 className={styles.title}>Home</h1>
-      {isLoading && <div className={styles.card}>Loading feed…</div>}
-      {error && (
-        <div className={styles.card} role="alert">
-          {String(error.message || 'Failed to load')}
-        </div>
-      )}
-      {!isLoading && !error && (
-        <div className={styles.card}>
-          <PostList items={list} />
-        </div>
-      )}
+      <FeedList posts={feedPosts} isLoading={isLoading} error={error} />
     </div>
   );
 }

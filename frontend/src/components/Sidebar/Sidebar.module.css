@@ -37,7 +37,7 @@
   margin-bottom: 8px;
   border-radius: 8px;
   text-decoration: none;
-  color: #262626;
+  color: #000000;
   transition: background-color 0.2s ease;
   font-size: 16px;
   font-weight: 400;
@@ -73,7 +73,7 @@
 .logoutBtn {
   background: none;
   border: none;
-  color: #262626;
+  color: #000000;
   cursor: pointer;
   font-size: 16px;
   padding: 12px;

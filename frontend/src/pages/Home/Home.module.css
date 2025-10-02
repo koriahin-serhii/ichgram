@@ -1,13 +1,6 @@
 .wrapper {
-  display: grid;
-  gap: 16px;
-}
-.title {
-  font-size: 24px;
-  font-weight: 700;
-}
-.card {
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  width: 100%;
+  min-height: 100vh;
+  /* background-color: #fafafa; */
+  padding: 0;
 }

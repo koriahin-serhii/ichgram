@@ -96,13 +96,15 @@ export default function PostCard({ post }: PostCardProps) {
           className={styles.avatar}
           onClick={() => navigate(`/profile/${post.author?._id}`)}
         >
-          {post.author?.profileImage ? (
-            <img src={post.author.profileImage} alt={post.author.name} />
-          ) : (
-            <div className={styles.avatarPlaceholder}>
-              {post.author?.name?.[0]?.toUpperCase() || 'U'}
-            </div>
-          )}
+          <div className={styles.avatarInner}>
+            {post.author?.profileImage ? (
+              <img src={post.author.profileImage} alt={post.author.name} />
+            ) : (
+              <div className={styles.avatarPlaceholder}>
+                {post.author?.name?.[0]?.toUpperCase() || 'U'}
+              </div>
+            )}
+          </div>
         </div>
         <div className={styles.headerInfo}>
           <span

@@ -1,13 +1,25 @@
-import { useFeed } from '@shared/api/posts';
+import { useMemo } from 'react';
+import { useFeed, type Post } from '@shared/api/posts';
 import { PostGrid } from '@shared/components';
+import useAuth from '@app/providers/useAuth';
 import styles from './Explore.module.css';
 
 export default function Explore() {
+  const { user } = useAuth();
   const { data: posts = [], isLoading, error } = useFeed();
 
-  // Mix the posts to show a varied selection
-  const shuffledPosts =
-    posts.length > 0 ? [...posts].sort(() => Math.random() - 0.5) : [];
+  // Filter out current user's posts and shuffle the rest
+  const explorePosts = useMemo(() => {
+    if (!posts.length) return [];
+
+    // Filter out current user's posts
+    const filteredPosts = user
+      ? posts.filter((post: Post) => post.author?._id !== user.id)
+      : posts;
+
+    // Shuffle posts for variety
+    return [...filteredPosts].sort(() => Math.random() - 0.5);
+  }, [posts, user]);
 
   if (error) {
     return (
@@ -22,7 +34,7 @@ export default function Explore() {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <PostGrid posts={shuffledPosts} isLoading={isLoading} />
+        <PostGrid posts={explorePosts} isLoading={isLoading} />
       </div>
     </div>
   );

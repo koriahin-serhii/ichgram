@@ -95,7 +95,7 @@ export function useFollowUser() {
   return useMutation<{ message: string }, Error, ID>({
     mutationFn: (userId) => followApi.followUser(userId),
     onSuccess: (_, userId) => {
-      // Инвалидируем все связанные запросы
+      // Invalidate all related queries
       queryClient.invalidateQueries({ queryKey: followKeys.followers(userId) });
       queryClient.invalidateQueries({ queryKey: followKeys.following(userId) });
       queryClient.invalidateQueries({
@@ -111,7 +111,7 @@ export function useUnfollowUser() {
   return useMutation<{ message: string }, Error, ID>({
     mutationFn: (userId) => followApi.unfollowUser(userId),
     onSuccess: (_, userId) => {
-      // Инвалидируем все связанные запросы
+      // Invalidate all related queries
       queryClient.invalidateQueries({ queryKey: followKeys.followers(userId) });
       queryClient.invalidateQueries({ queryKey: followKeys.following(userId) });
       queryClient.invalidateQueries({

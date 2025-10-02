@@ -2,6 +2,22 @@ import api from './client';
 import type { ID } from './types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
+// Types
+export interface Post {
+  _id: string;
+  imageUrl: string;
+  description?: string;
+  likesCount?: number;
+  commentsCount?: number;
+  author?: {
+    _id: string;
+    name: string;
+    profileImage?: string;
+  };
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export const postKeys = {
   all: ['posts'] as const,
   feed: () => [...postKeys.all, 'feed'] as const,

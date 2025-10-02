@@ -12,6 +12,7 @@ export * as NotificationsAPI from './notifications';
 // Экспортируем основные типы
 export type { ID } from './types';
 export type { User, UserProfile, UserStats } from './users';
+export type { Post } from './posts';
 export type { Comment } from './comments';
 export type { Like } from './likes';
 export type { Follow } from './follow';

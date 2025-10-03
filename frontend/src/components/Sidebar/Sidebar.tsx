@@ -17,7 +17,6 @@ import MessagesActiveIcon from '@assets/icons/messages-active.svg?react';
 import NotificationIcon from '@assets/icons/notification.svg?react';
 import NotificationActiveIcon from '@assets/icons/notification-active.svg?react';
 import CreateIcon from '@assets/icons/create.svg?react';
-import ProfileIcon from '@assets/icons/profile.svg?react';
 
 interface SidebarProps {
   isSearchOpen: boolean;
@@ -30,6 +29,7 @@ export default function Sidebar({ isSearchOpen, onSearchClick, onSearchClose }: 
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
+  const isProfileActive = location.pathname === '/my-profile';
 
   const navItems = [
     {
@@ -121,22 +121,29 @@ export default function Sidebar({ isSearchOpen, onSearchClick, onSearchClose }: 
         </nav>
 
         <div className={styles.profile}>
-          {user ? (
-            <>
-              <Link to="/my-profile" className={styles.navItem} onClick={onSearchClose}>
-                <ProfileIcon className={styles.icon} />
-                <span className={styles.label}>Profile</span>
-              </Link>
-              <button onClick={logout} className={styles.logoutBtn}>
-                Logout
-              </button>
-            </>
-          ) : (
-            <div className={styles.authLinks}>
-              <Link to="/login">Login</Link>
-              <Link to="/signup">Sign up</Link>
+          <Link 
+            to="/my-profile" 
+            className={`${styles.navItem} ${!isSearchOpen && isProfileActive ? styles.active : ''}`} 
+            onClick={onSearchClose}
+          >
+            <div className={styles.profileAvatar}>
+              <div className={styles.avatarContainer}>
+                <div className={styles.avatarInner}>
+                  {user?.profileImage ? (
+                    <img src={user.profileImage} alt={user.name} className={styles.avatarImage} />
+                  ) : (
+                    <div className={styles.avatarPlaceholder}>
+                      {user?.name?.[0]?.toUpperCase() || 'U'}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          )}
+            <span className={styles.label}>Profile</span>
+          </Link>
+          <button onClick={logout} className={styles.logoutBtn}>
+            Logout
+          </button>
         </div>
       </div>
     </aside>

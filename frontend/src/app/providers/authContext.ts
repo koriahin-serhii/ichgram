@@ -5,6 +5,7 @@ export type AuthUser = {
   name?: string;
   email?: string;
   fullName?: string;
+  profileImage?: string;
 };
 
 export type AuthContextValue = {

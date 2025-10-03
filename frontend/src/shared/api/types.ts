@@ -9,5 +9,5 @@ export type Paginated<T> = {
 
 export type AuthResponse = {
   token?: string; // if backend returns token in body; cookies can also be used
-  user?: { id: ID; name?: string; email?: string; username?: string };
+  user?: { id: ID; name?: string; email?: string; username?: string; profileImage?: string };
 };

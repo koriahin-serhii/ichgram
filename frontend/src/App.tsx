@@ -16,7 +16,10 @@ export default function App() {
           </MainLayout>
         </BrowserRouter>
         {import.meta.env.DEV && (
-          <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+          <ReactQueryDevtools
+            initialIsOpen={false}
+            buttonPosition="bottom-right"
+          />
         )}
       </AuthProvider>
     </QueryClientProvider>

@@ -20,11 +20,21 @@ import CreateIcon from '@assets/icons/create.svg?react';
 
 interface SidebarProps {
   isSearchOpen: boolean;
+  isCreatePostOpen: boolean;
   onSearchClick: () => void;
   onSearchClose: () => void;
+  onCreateClick: () => void;
+  onCreateClose: () => void;
 }
 
-export default function Sidebar({ isSearchOpen, onSearchClick, onSearchClose }: SidebarProps) {
+export default function Sidebar({ 
+  isSearchOpen, 
+  isCreatePostOpen,
+  onSearchClick,
+  onSearchClose,
+  onCreateClick,
+  onCreateClose,
+}: SidebarProps) {
   const { user, logout } = useAuth();
   const location = useLocation();
 
@@ -68,11 +78,11 @@ export default function Sidebar({ isSearchOpen, onSearchClick, onSearchClose }: 
       onClick: undefined,
     },
     {
-      path: '/create',
+      path: '#',
       label: 'Create',
       icon: CreateIcon,
       activeIcon: CreateIcon,
-      onClick: undefined,
+      onClick: onCreateClick,
     },
   ];
 
@@ -87,9 +97,11 @@ export default function Sidebar({ isSearchOpen, onSearchClick, onSearchClose }: 
 
         <nav className={styles.nav}>
           {navItems.map((item) => {
-            // When SearchSidebar is open, only Search is active
+            // When SearchSidebar or CreatePostModal is open, only that item is active
             const active = isSearchOpen 
               ? item.label === 'Search'
+              : isCreatePostOpen
+              ? item.label === 'Create'
               : isActive(item.path);
             const IconComponent = active ? item.activeIcon : item.icon;
 
@@ -110,7 +122,10 @@ export default function Sidebar({ isSearchOpen, onSearchClick, onSearchClose }: 
               <Link
                 key={item.path}
                 to={item.path}
-                onClick={onSearchClose}
+                onClick={() => {
+                  onSearchClose();
+                  onCreateClose();
+                }}
                 className={`${styles.navItem} ${active ? styles.active : ''}`}
               >
                 <IconComponent className={styles.icon} />
@@ -124,7 +139,10 @@ export default function Sidebar({ isSearchOpen, onSearchClick, onSearchClose }: 
           <Link 
             to="/my-profile" 
             className={`${styles.navItem} ${!isSearchOpen && isProfileActive ? styles.active : ''}`} 
-            onClick={onSearchClose}
+            onClick={() => {
+              onSearchClose();
+              onCreateClose();
+            }}
           >
             <div className={styles.profileAvatar}>
               <div className={styles.avatarContainer}>

@@ -5,12 +5,10 @@ import { ProfileHeader, PostGrid } from '@shared/components';
 import styles from './UserProfile.module.css';
 
 export default function UserProfile() {
-  const { username } = useParams<{ username: string }>();
+  const { id } = useParams<{ id: string }>();
   
-  // В реальном приложении нужно было бы получить ID пользователя по username
-  // Пока что используем username как ID для демонстрации
-  const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile(username || '');
-  const { data: posts = [], isLoading: postsLoading, error: postsError } = useUserPosts(username || '');
+  const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile(id || '');
+  const { data: posts = [], isLoading: postsLoading, error: postsError } = useUserPosts(id || '');
 
   if (profileLoading) {
     return (
@@ -49,7 +47,6 @@ export default function UserProfile() {
         onUnfollow={handleUnfollow}
       />
       
-      <div className={styles.divider} />
       
       <div className={styles.posts}>
         {postsError ? (

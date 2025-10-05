@@ -60,18 +60,6 @@ export default function ProfileHeader({
                   {user.isFollowing ? 'Following' : 'Follow'}
                 </button>
                 <button className={styles.messageButton}>Message</button>
-                <button className={styles.moreButton}>
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <circle cx="12" cy="12" r="1.5" />
-                    <circle cx="6" cy="12" r="1.5" />
-                    <circle cx="18" cy="12" r="1.5" />
-                  </svg>
-                </button>
               </>
             )}
           </div>

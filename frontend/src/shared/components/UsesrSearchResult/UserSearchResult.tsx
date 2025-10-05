@@ -14,8 +14,8 @@ export default function UserSearchResult({ user, onClick }: UserSearchResultProp
   };
 
   return (
-    <Link 
-      to={`/u/${user.name}`} 
+    <Link
+      to={`/profile/${user._id}`}
       className={styles.result}
       onClick={handleClick}
     >

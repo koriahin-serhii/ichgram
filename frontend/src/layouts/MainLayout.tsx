@@ -10,21 +10,27 @@ export default function MainLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
-  
+
   const isAuthPage = ['/login', '/signup', '/reset'].includes(
     location.pathname
   );
 
-  const handleSearchOpen = () => setIsSearchOpen(true);
+  const handleSearchOpen = () => {
+    setIsSearchOpen(true);
+    setIsCreatePostOpen(false);
+  };
   const handleSearchClose = () => setIsSearchOpen(false);
-  
-  const handleCreatePostOpen = () => setIsCreatePostOpen(true);
+
+  const handleCreatePostOpen = () => {
+    setIsCreatePostOpen(true);
+    setIsSearchOpen(false);
+  };
   const handleCreatePostClose = () => setIsCreatePostOpen(false);
 
   return (
     <div className={styles.container}>
       {!isAuthPage && (
-        <Sidebar 
+        <Sidebar
           isSearchOpen={isSearchOpen}
           isCreatePostOpen={isCreatePostOpen}
           onSearchClick={handleSearchOpen}
@@ -33,19 +39,18 @@ export default function MainLayout({ children }: { children: ReactNode }) {
           onCreateClose={handleCreatePostClose}
         />
       )}
-      <main className={`${styles.main} ${!isAuthPage ? styles.withSidebar : ''}`}>
+      <main
+        className={`${styles.main} ${!isAuthPage ? styles.withSidebar : ''}`}
+      >
         {children}
       </main>
       {!isAuthPage && <Footer />}
-      
-      <SearchSidebar 
-        isOpen={isSearchOpen} 
-        onClose={handleSearchClose} 
-      />
-      
-      <CreatePostModal 
-        isOpen={isCreatePostOpen} 
-        onClose={handleCreatePostClose} 
+
+      <SearchSidebar isOpen={isSearchOpen} onClose={handleSearchClose} />
+
+      <CreatePostModal
+        isOpen={isCreatePostOpen}
+        onClose={handleCreatePostClose}
       />
     </div>
   );

@@ -57,7 +57,7 @@ export default function ProfileHeader({
                   onClick={handleFollowClick}
                   disabled={isFollowLoading}
                 >
-                  {user.isFollowing ? 'Following' : 'Follow'}
+                  {user.isFollowing ? 'Unfollow' : 'Follow'}
                 </button>
                 <button className={styles.messageButton}>Message</button>
               </>

@@ -1,6 +1,7 @@
 import client from './client';
 import type { ID } from './types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { userKeys } from './users';
 
 // Types for follows
 export interface Follow {
@@ -101,6 +102,8 @@ export function useFollowUser() {
       queryClient.invalidateQueries({
         queryKey: followKeys.isFollowing(userId),
       });
+      // Invalidate user profile to update follower count
+      queryClient.invalidateQueries({ queryKey: userKeys.profile(userId) });
     },
   });
 }
@@ -117,6 +120,8 @@ export function useUnfollowUser() {
       queryClient.invalidateQueries({
         queryKey: followKeys.isFollowing(userId),
       });
+      // Invalidate user profile to update follower count
+      queryClient.invalidateQueries({ queryKey: userKeys.profile(userId) });
     },
   });
 }

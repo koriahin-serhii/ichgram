@@ -71,3 +71,18 @@ export const unfollowUser = async (
     res.status(500).json({ message: 'Server error', error });
   }
 };
+
+// Check if current user is following another user
+export const isFollowing = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  try {
+    const follower = req.user;
+    const { userId } = req.params;
+    const follow = await FollowModel.findOne({ follower, following: userId });
+    res.json({ isFollowing: !!follow });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};

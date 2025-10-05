@@ -6,7 +6,6 @@ import { useComments } from '@shared/api/comments';
 import {
   useIsFollowing,
   useFollowUser,
-  useUnfollowUser,
 } from '@shared/api/follow';
 import useAuth from '@app/providers/useAuth';
 import styles from './PostCard.module.css';
@@ -49,7 +48,6 @@ export default function PostCard({ post }: PostCardProps) {
   const { data: comments = [] } = useComments(post._id);
   const { data: isFollowing = false } = useIsFollowing(post.author?._id || '');
   const followUser = useFollowUser();
-  const unfollowUser = useUnfollowUser();
 
   const isOwnPost = user?.id === post.author?._id;
 
@@ -60,20 +58,7 @@ export default function PostCard({ post }: PostCardProps) {
 
   const handleFollow = () => {
     if (!post.author?._id) return;
-
-    if (isFollowing) {
-      unfollowUser.mutate(post.author._id, {
-        onSuccess: () => {
-          // Button will update automatically via query invalidation
-        },
-      });
-    } else {
-      followUser.mutate(post.author._id, {
-        onSuccess: () => {
-          // Button will update automatically via query invalidation
-        },
-      });
-    }
+    followUser.mutate(post.author._id);
   };
 
   const handleCommentClick = () => {
@@ -119,15 +104,15 @@ export default function PostCard({ post }: PostCardProps) {
               <span className={styles.timeAgo}>{postTimeAgo}</span>
             </>
           )}
-          {!isOwnPost && post.author?._id && (
+          {!isOwnPost && !isFollowing && post.author?._id && (
             <>
               <span className={styles.dot}>•</span>
               <button
                 className={styles.followBtn}
                 onClick={handleFollow}
-                disabled={followUser.isPending || unfollowUser.isPending}
+                disabled={followUser.isPending}
               >
-                {isFollowing ? 'unfollow' : 'follow'}
+                Follow
               </button>
             </>
           )}

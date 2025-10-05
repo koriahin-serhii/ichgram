@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useUserProfile } from '@shared/api/users';
 import { useUserPosts } from '@shared/api/posts';
+import { useIsFollowing, useFollowUser, useUnfollowUser } from '@shared/api/follow';
 import { ProfileHeader, PostGrid } from '@shared/components';
 import styles from './UserProfile.module.css';
 
@@ -9,6 +10,9 @@ export default function UserProfile() {
   
   const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile(id || '');
   const { data: posts = [], isLoading: postsLoading, error: postsError } = useUserPosts(id || '');
+  const { data: isFollowing = false } = useIsFollowing(id || '');
+  const followUser = useFollowUser();
+  const unfollowUser = useUnfollowUser();
 
   if (profileLoading) {
     return (
@@ -29,23 +33,32 @@ export default function UserProfile() {
   }
 
   const handleFollow = () => {
-    console.log('Follow user:', profileData.name);
-    // TODO: Implement follow functionality
+    if (!id) return;
+    followUser.mutate(id);
   };
 
   const handleUnfollow = () => {
-    console.log('Unfollow user:', profileData.name);
-    // TODO: Implement unfollow functionality
+    if (!id) return;
+    unfollowUser.mutate(id);
   };
+
+  // Merge isFollowing state with profile data
+  const enrichedProfileData = profileData ? {
+    ...profileData,
+    isFollowing
+  } : null;
 
   return (
     <div className={styles.container}>
-      <ProfileHeader 
-        user={profileData} 
-        isOwnProfile={false}
-        onFollow={handleFollow}
-        onUnfollow={handleUnfollow}
-      />
+      {enrichedProfileData && (
+        <ProfileHeader 
+          user={enrichedProfileData} 
+          isOwnProfile={false}
+          onFollow={handleFollow}
+          onUnfollow={handleUnfollow}
+          isFollowLoading={followUser.isPending || unfollowUser.isPending}
+        />
+      )}
       
       
       <div className={styles.posts}>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePost, useDeletePost } from '@shared/api/posts';
 import { useComments, useAddComment } from '@shared/api/comments';
-import { useToggleLike } from '@shared/api/likes';
+import { useToggleLike, useLikes } from '@shared/api/likes';
 import {
   useIsFollowing,
   useFollowUser,
@@ -10,8 +10,6 @@ import {
 } from '@shared/api/follow';
 import useAuth from '@app/providers/useAuth';
 import MoreIcon from '@assets/icons/more.svg?react';
-import LikeIcon from '@assets/icons/like.svg?react';
-import LikeActiveIcon from '@assets/icons/like-active.svg?react';
 import CommentIcon from '@assets/icons/comment.svg?react';
 import styles from './PostDetailModal.module.css';
 
@@ -50,7 +48,6 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
   const navigate = useNavigate();
   const { user } = useAuth();
   const [comment, setComment] = useState('');
-  const [liked, setLiked] = useState(false);
   const [showOptionsModal, setShowOptionsModal] = useState(false);
 
   const {
@@ -61,6 +58,7 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
   const { data: comments = [], isLoading: commentsLoading } = useComments(
     postId
   );
+  const { data: likesData } = useLikes(postId);
   const { data: isFollowing = false } = useIsFollowing(post?.author?._id || '');
 
   const toggleLike = useToggleLike();
@@ -70,9 +68,12 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
   const deletePost = useDeletePost();
 
   const isOwnPost = user?.id === post?.author?._id;
+  
+  // Check if current user has liked this post
+  const liked = likesData?.likes?.some((like: { user: string }) => like.user === user?.id) || false;
+  const likesCount = likesData?.count || 0;
 
   const handleLike = () => {
-    setLiked(!liked);
     toggleLike.mutate(postId);
   };
 
@@ -295,9 +296,6 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
                         {timeAgo(c.createdAt)}
                       </div>
                     </div>
-                    <button className={styles.commentLikeBtn}>
-                      <LikeIcon />
-                    </button>
                   </div>
                 ))
               ) : null}
@@ -308,8 +306,18 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
               <button
                 className={`${styles.actionBtn} ${liked ? styles.liked : ''}`}
                 onClick={handleLike}
+                aria-label="Like"
               >
-                {liked ? <LikeActiveIcon /> : <LikeIcon />}
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill={liked ? '#ed4956' : 'none'}
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
               </button>
               <button
                 className={styles.actionBtn}
@@ -324,8 +332,8 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
             </div>
 
             {/* Likes count */}
-            {post.likesCount !== undefined && post.likesCount > 0 && (
-              <div className={styles.likes}>{post.likesCount} likes</div>
+            {likesCount > 0 && (
+              <div className={styles.likes}>{likesCount} {likesCount === 1 ? 'like' : 'likes'}</div>
             )}
 
             {/* Time */}

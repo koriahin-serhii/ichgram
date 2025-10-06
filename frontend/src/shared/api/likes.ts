@@ -10,6 +10,11 @@ export interface Like {
   createdAt: string;
 }
 
+export interface LikesResponse {
+  count: number;
+  likes: Like[];
+}
+
 // Query keys
 export const likeKeys = {
   all: ['likes'] as const,
@@ -27,7 +32,7 @@ export const likesApi = {
   },
 
   // Get likes for a post
-  getLikes: async (postId: ID): Promise<Like[]> => {
+  getLikes: async (postId: ID): Promise<LikesResponse> => {
     const response = await client.get(`/api/likes/likes/${postId}`);
     return response.data;
   },

@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Post } from '@shared/api/posts';
-import { useToggleLike } from '@shared/api/likes';
+import { useToggleLike, useLikes } from '@shared/api/likes';
 import { useComments } from '@shared/api/comments';
 import {
   useIsFollowing,
@@ -43,17 +42,20 @@ function timeAgo(date: string): string {
 export default function PostCard({ post, onPostClick }: PostCardProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [liked, setLiked] = useState(false);
 
   const toggleLike = useToggleLike();
   const { data: comments = [] } = useComments(post._id);
+  const { data: likesData } = useLikes(post._id);
   const { data: isFollowing = false } = useIsFollowing(post.author?._id || '');
   const followUser = useFollowUser();
 
   const isOwnPost = user?.id === post.author?._id;
+  
+  // Check if current user has liked this post
+  const liked = likesData?.likes?.some((like: { user: string }) => like.user === user?.id) || false;
+  const likesCount = likesData?.count || 0;
 
   const handleLike = () => {
-    setLiked(!liked);
     toggleLike.mutate(post._id);
   };
 
@@ -168,9 +170,11 @@ export default function PostCard({ post, onPostClick }: PostCardProps) {
       </div>
 
       {/* Likes */}
-      <div className={styles.likes}>
-        <strong>{(post.likesCount || 0) + (liked ? 1 : 0)} likes</strong>
-      </div>
+      {likesCount > 0 && (
+        <div className={styles.likes}>
+          <strong>{likesCount} {likesCount === 1 ? 'like' : 'likes'}</strong>
+        </div>
+      )}
 
       {/* Description */}
       {post.description && (

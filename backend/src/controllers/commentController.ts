@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import CommentModel from '../models/commentModel.js';
+import PostModel from '../models/postModel.js';
+import NotificationModel from '../models/notificationModel.js';
 import { Types } from 'mongoose';
 
 interface AuthenticatedRequest extends Request {
@@ -16,8 +18,22 @@ export const addComment = async (req: AuthenticatedRequest, res: Response) => {
       post: postId,
       content,
     });
+    
     // Populate user information
     await comment.populate('user', '_id name profileImage');
+    
+    // Create notification for the post author
+    const post = await PostModel.findById(postId);
+    if (post && String(post.author) !== String(userId)) {
+      await NotificationModel.create({
+        type: 'comment',
+        recipient: post.author,
+        sender: userId,
+        post: postId,
+        comment: comment._id,
+      });
+    }
+    
     res.status(201).json(comment);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

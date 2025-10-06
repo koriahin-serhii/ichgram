@@ -11,7 +11,10 @@ export interface Notification {
     name: string;
     profileImage?: string;
   };
-  post?: string;
+  post?: {
+    _id: string;
+    imageUrl?: string;
+  };
   message?: string;
   read: boolean;
   createdAt: string;
@@ -37,6 +40,12 @@ export const notificationsApi = {
     const response = await client.post('/api/notifications/read');
     return response.data;
   },
+
+  // Mark single notification as read
+  markAsRead: async (notificationId: string): Promise<{ message: string }> => {
+    const response = await client.post(`/api/notifications/read/${notificationId}`);
+    return response.data;
+  },
 };
 
 // React Query hooks
@@ -54,6 +63,21 @@ export function useMarkNotificationsAsRead() {
     mutationFn: notificationsApi.markAllAsRead,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+    },
+  });
+}
+
+export function useMarkNotificationAsRead() {
+  const queryClient = useQueryClient();
+
+  return useMutation<{ message: string }, Error, string>({
+    mutationFn: (notificationId: string) =>
+      notificationsApi.markAsRead(notificationId),
+    onSuccess: () => {
+      // Invalidate and refetch notifications
+      queryClient.invalidateQueries({ queryKey: notificationKeys.all });
+      // Force refetch
+      queryClient.refetchQueries({ queryKey: notificationKeys.list() });
     },
   });
 }

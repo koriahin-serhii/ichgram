@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import FollowModel from '../models/followModel.js';
+import NotificationModel from '../models/notificationModel.js';
 import { Types } from 'mongoose';
 
 interface AuthenticatedRequest extends Request {
@@ -47,6 +48,14 @@ export const followUser = async (req: AuthenticatedRequest, res: Response) => {
       return res.status(400).json({ message: 'Already following' });
     }
     await FollowModel.create({ follower, following: userId });
+    
+    // Create notification for the user being followed
+    await NotificationModel.create({
+      type: 'follow',
+      recipient: userId,
+      sender: follower,
+    });
+    
     res.json({ message: 'Followed successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -66,6 +75,14 @@ export const unfollowUser = async (
       return res.status(400).json({ message: 'Not following' });
     }
     await follow.deleteOne();
+    
+    // Delete follow notification when unfollowing
+    await NotificationModel.deleteOne({
+      type: 'follow',
+      sender: follower,
+      recipient: userId,
+    });
+    
     res.json({ message: 'Unfollowed successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

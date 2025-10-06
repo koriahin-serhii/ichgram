@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from '@components/Sidebar/Sidebar';
 import Footer from '@components/Footer/Footer';
-import { SearchSidebar, CreatePostModal } from '@shared/components';
+import { SearchSidebar, NotificationsSidebar, CreatePostModal } from '@shared/components';
 import PostDetailModal from '@shared/components/PostDetailModal/PostDetailModal';
 import { PostDetailProvider } from '@app/providers/PostDetailProvider';
 import { usePostDetail } from '@app/providers/usePostDetail';
@@ -12,6 +12,7 @@ import styles from './MainLayout.module.css';
 function MainLayoutContent({ children }: { children: ReactNode }) {
   const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const { selectedPostId, closePostDetail } = usePostDetail();
 
@@ -21,14 +22,24 @@ function MainLayoutContent({ children }: { children: ReactNode }) {
 
   const handleSearchOpen = () => {
     setIsSearchOpen(true);
+    setIsNotificationsOpen(false);
     setIsCreatePostOpen(false);
     closePostDetail();
   };
   const handleSearchClose = () => setIsSearchOpen(false);
 
+  const handleNotificationsOpen = () => {
+    setIsNotificationsOpen(true);
+    setIsSearchOpen(false);
+    setIsCreatePostOpen(false);
+    closePostDetail();
+  };
+  const handleNotificationsClose = () => setIsNotificationsOpen(false);
+
   const handleCreatePostOpen = () => {
     setIsCreatePostOpen(true);
     setIsSearchOpen(false);
+    setIsNotificationsOpen(false);
     closePostDetail();
   };
   const handleCreatePostClose = () => setIsCreatePostOpen(false);
@@ -38,9 +49,12 @@ function MainLayoutContent({ children }: { children: ReactNode }) {
       {!isAuthPage && (
         <Sidebar
           isSearchOpen={isSearchOpen}
+          isNotificationsOpen={isNotificationsOpen}
           isCreatePostOpen={isCreatePostOpen}
           onSearchClick={handleSearchOpen}
           onSearchClose={handleSearchClose}
+          onNotificationsClick={handleNotificationsOpen}
+          onNotificationsClose={handleNotificationsClose}
           onCreateClick={handleCreatePostOpen}
           onCreateClose={handleCreatePostClose}
           onPostDetailClose={closePostDetail}
@@ -54,6 +68,8 @@ function MainLayoutContent({ children }: { children: ReactNode }) {
       {!isAuthPage && <Footer />}
 
       <SearchSidebar isOpen={isSearchOpen} onClose={handleSearchClose} />
+      
+      <NotificationsSidebar isOpen={isNotificationsOpen} onClose={handleNotificationsClose} />
 
       <CreatePostModal
         isOpen={isCreatePostOpen}

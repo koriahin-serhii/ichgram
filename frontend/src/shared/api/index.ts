@@ -84,5 +84,6 @@ export {
   // Notifications hooks
   useNotifications,
   useMarkNotificationsAsRead,
+  useMarkNotificationAsRead,
   notificationKeys,
 } from './notifications';

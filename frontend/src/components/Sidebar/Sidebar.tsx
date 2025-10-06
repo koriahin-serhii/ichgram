@@ -20,19 +20,25 @@ import CreateIcon from '@assets/icons/create.svg?react';
 
 interface SidebarProps {
   isSearchOpen: boolean;
+  isNotificationsOpen: boolean;
   isCreatePostOpen: boolean;
   onSearchClick: () => void;
   onSearchClose: () => void;
+  onNotificationsClick: () => void;
+  onNotificationsClose: () => void;
   onCreateClick: () => void;
   onCreateClose: () => void;
   onPostDetailClose?: () => void;
 }
 
 export default function Sidebar({ 
-  isSearchOpen, 
+  isSearchOpen,
+  isNotificationsOpen,
   isCreatePostOpen,
   onSearchClick,
   onSearchClose,
+  onNotificationsClick,
+  onNotificationsClose,
   onCreateClick,
   onCreateClose,
   onPostDetailClose,
@@ -78,11 +84,11 @@ export default function Sidebar({
     },
     {
       id: 'notifications',
-      path: '/notifications',
+      path: '#',
       label: 'Notifications',
       icon: NotificationIcon,
       activeIcon: NotificationActiveIcon,
-      onClick: undefined,
+      onClick: onNotificationsClick,
     },
     {
       id: 'create',
@@ -105,9 +111,11 @@ export default function Sidebar({
 
         <nav className={styles.nav}>
           {navItems.map((item) => {
-            // When SearchSidebar or CreatePostModal is open, only that item is active
+            // When SearchSidebar, NotificationsSidebar or CreatePostModal is open, only that item is active
             const active = isSearchOpen 
               ? item.label === 'Search'
+              : isNotificationsOpen
+              ? item.label === 'Notifications'
               : isCreatePostOpen
               ? item.label === 'Create'
               : isActive(item.path);
@@ -132,6 +140,7 @@ export default function Sidebar({
                 to={item.path}
                 onClick={() => {
                   onSearchClose();
+                  onNotificationsClose();
                   onCreateClose();
                   onPostDetailClose?.();
                 }}
@@ -147,9 +156,10 @@ export default function Sidebar({
         <div className={styles.profile}>
           <Link 
             to="/my-profile" 
-            className={`${styles.navItem} ${!isSearchOpen && isProfileActive ? styles.active : ''}`} 
+            className={`${styles.navItem} ${!isSearchOpen && !isNotificationsOpen && isProfileActive ? styles.active : ''}`} 
             onClick={() => {
               onSearchClose();
+              onNotificationsClose();
               onCreateClose();
               onPostDetailClose?.();
             }}

@@ -2,7 +2,6 @@ import { Routes, Route } from 'react-router-dom';
 import Home from '@pages/Home/Home';
 import Explore from '@pages/Explore/Explore';
 import Messages from '@pages/Messages/Messages';
-import Notifications from '@pages/Notifications/Notifications';
 import MyProfile from '@pages/Profile/MyProfile/MyProfile';
 import UserProfile from '@pages/Profile/UserProfile/UserProfile';
 import EditProfile from '@pages/Profile/EditProfile/EditProfile';
@@ -30,7 +29,6 @@ export default function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/messages" element={<Messages />} />
-        <Route path="/notifications" element={<Notifications />} />
 
         {/* Profile */}
         <Route path="/my-profile" element={<MyProfile />} />

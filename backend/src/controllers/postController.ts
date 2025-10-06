@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import PostModel from '../models/postModel.js';
+import LikeModel from '../models/likeModel.js';
+import CommentModel from '../models/commentModel.js';
 import { Types } from 'mongoose';
 
 import { uploadPostImageToS3, deletePostImageFromS3 } from '../utils/s3.js';
@@ -13,9 +15,55 @@ interface AuthenticatedRequest extends Request {
 export const getUserPosts = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
-    const posts = await PostModel.find({ author: userId })
-      .populate('author', '_id name profileImage')
-      .sort({ createdAt: -1 });
+    const posts = await PostModel.aggregate([
+      { $match: { author: new Types.ObjectId(userId) } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'author',
+          foreignField: '_id',
+          as: 'author',
+        },
+      },
+      { $unwind: '$author' },
+      {
+        $lookup: {
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'post',
+          as: 'likes',
+        },
+      },
+      {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'post',
+          as: 'comments',
+        },
+      },
+      {
+        $addFields: {
+          likesCount: { $size: '$likes' },
+          commentsCount: { $size: '$comments' },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          description: 1,
+          imageUrl: 1,
+          likesCount: 1,
+          commentsCount: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          'author._id': 1,
+          'author.name': 1,
+          'author.profileImage': 1,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
     res.json(posts);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -25,9 +73,54 @@ export const getUserPosts = async (req: Request, res: Response) => {
 // Get all posts (feed)
 export const getAllPosts = async (_req: Request, res: Response) => {
   try {
-    const posts = await PostModel.find()
-      .populate('author', '_id name profileImage')
-      .sort({ createdAt: -1 });
+    const posts = await PostModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'author',
+          foreignField: '_id',
+          as: 'author',
+        },
+      },
+      { $unwind: '$author' },
+      {
+        $lookup: {
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'post',
+          as: 'likes',
+        },
+      },
+      {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'post',
+          as: 'comments',
+        },
+      },
+      {
+        $addFields: {
+          likesCount: { $size: '$likes' },
+          commentsCount: { $size: '$comments' },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          description: 1,
+          imageUrl: 1,
+          likesCount: 1,
+          commentsCount: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          'author._id': 1,
+          'author.name': 1,
+          'author.profileImage': 1,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
     res.json(posts);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -37,10 +130,61 @@ export const getAllPosts = async (_req: Request, res: Response) => {
 // Get post by ID
 export const getPostById = async (req: Request, res: Response) => {
   try {
-    const post = await PostModel.findById(req.params.id)
-      .populate('author', '_id name profileImage');
-    if (!post) return res.status(404).json({ message: 'Post not found' });
-    res.json(post);
+    const postId = req.params.id;
+    const posts = await PostModel.aggregate([
+      { $match: { _id: new Types.ObjectId(postId) } },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'author',
+          foreignField: '_id',
+          as: 'author',
+        },
+      },
+      { $unwind: '$author' },
+      {
+        $lookup: {
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'post',
+          as: 'likes',
+        },
+      },
+      {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'post',
+          as: 'comments',
+        },
+      },
+      {
+        $addFields: {
+          likesCount: { $size: '$likes' },
+          commentsCount: { $size: '$comments' },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          description: 1,
+          imageUrl: 1,
+          likesCount: 1,
+          commentsCount: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          'author._id': 1,
+          'author.name': 1,
+          'author.profileImage': 1,
+        },
+      },
+    ]);
+    
+    if (posts.length === 0) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    
+    res.json(posts[0]);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }
@@ -62,10 +206,16 @@ export const createPost = async (req: AuthenticatedRequest, res: Response) => {
     const post = new PostModel({ description, imageUrl, author });
     await post.save();
     
-    // Populate author information before sending response
+    // Populate author information and add counts (0 for new post)
     await post.populate('author', '_id name profileImage');
     
-    res.status(201).json(post);
+    const postWithCounts = {
+      ...post.toObject(),
+      likesCount: 0,
+      commentsCount: 0,
+    };
+    
+    res.status(201).json(postWithCounts);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }

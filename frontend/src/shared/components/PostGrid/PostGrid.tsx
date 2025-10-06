@@ -15,9 +15,12 @@ interface PostGridProps {
   onPostClick?: (postId: string) => void;
 }
 
-export default function PostGrid({ posts, isLoading, onPostClick }: PostGridProps) {
+export default function PostGrid({
+  posts,
+  isLoading,
+  onPostClick,
+}: PostGridProps) {
   const [hoveredPost, setHoveredPost] = useState<string | null>(null);
-
   if (isLoading) {
     return (
       <div className={styles.grid}>

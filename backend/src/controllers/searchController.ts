@@ -22,7 +22,37 @@ export const searchUsers = async (req: Request, res: Response) => {
 // Explore: get posts in random order
 export const explorePosts = async (_req: Request, res: Response) => {
   try {
-    const posts = await PostModel.aggregate([{ $sample: { size: 20 } }]);
+    const posts = await PostModel.aggregate([
+      { $sample: { size: 20 } },
+      {
+        $lookup: {
+          from: 'likes',
+          localField: '_id',
+          foreignField: 'post',
+          as: 'likes',
+        },
+      },
+      {
+        $lookup: {
+          from: 'comments',
+          localField: '_id',
+          foreignField: 'post',
+          as: 'comments',
+        },
+      },
+      {
+        $addFields: {
+          likesCount: { $size: '$likes' },
+          commentsCount: { $size: '$comments' },
+        },
+      },
+      {
+        $project: {
+          likes: 0,
+          comments: 0,
+        },
+      },
+    ]);
     res.json(posts);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

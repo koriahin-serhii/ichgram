@@ -13,9 +13,9 @@ interface AuthenticatedRequest extends Request {
 export const getUserPosts = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
-    const posts = await PostModel.find({ author: userId }).sort({
-      createdAt: -1,
-    });
+    const posts = await PostModel.find({ author: userId })
+      .populate('author', '_id name profileImage')
+      .sort({ createdAt: -1 });
     res.json(posts);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -25,7 +25,9 @@ export const getUserPosts = async (req: Request, res: Response) => {
 // Get all posts (feed)
 export const getAllPosts = async (_req: Request, res: Response) => {
   try {
-    const posts = await PostModel.find().sort({ createdAt: -1 });
+    const posts = await PostModel.find()
+      .populate('author', '_id name profileImage')
+      .sort({ createdAt: -1 });
     res.json(posts);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -35,7 +37,8 @@ export const getAllPosts = async (_req: Request, res: Response) => {
 // Get post by ID
 export const getPostById = async (req: Request, res: Response) => {
   try {
-    const post = await PostModel.findById(req.params.id);
+    const post = await PostModel.findById(req.params.id)
+      .populate('author', '_id name profileImage');
     if (!post) return res.status(404).json({ message: 'Post not found' });
     res.json(post);
   } catch (error) {
@@ -58,6 +61,10 @@ export const createPost = async (req: AuthenticatedRequest, res: Response) => {
     );
     const post = new PostModel({ description, imageUrl, author });
     await post.save();
+    
+    // Populate author information before sending response
+    await post.populate('author', '_id name profileImage');
+    
     res.status(201).json(post);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -118,6 +125,10 @@ export const updatePost = async (req: AuthenticatedRequest, res: Response) => {
       );
     }
     await post.save();
+    
+    // Populate author information before sending response
+    await post.populate('author', '_id name profileImage');
+    
     res.json(post);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

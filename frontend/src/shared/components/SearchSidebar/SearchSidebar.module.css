@@ -1,0 +1,185 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 1000;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 245px; /* Width of the main sidebar */
+  width: 397px;
+  height: 100vh;
+  background: white;
+  border-radius: 0 16px 16px 0;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 24px 24px 16px 24px;
+  border-bottom: 1px solid #dbdbdb;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #262626;
+  margin: 0;
+}
+
+.searchBox {
+  padding: 16px 24px;
+  border-bottom: 1px solid #dbdbdb;
+}
+
+.searchInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 16px;
+  color: #8e8e8e;
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px 12px 48px;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  background: #efefef;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  border-color: #8e8e8e;
+  background: white;
+}
+
+.clearButton {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #8e8e8e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+}
+
+.clearButton:hover {
+  background: #f5f5f5;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.results {
+  padding: 16px 0;
+}
+
+.loading,
+.noResults {
+  padding: 20px 24px;
+  text-align: center;
+  color: #8e8e8e;
+  font-size: 14px;
+}
+
+.recent {
+  padding: 16px 0;
+}
+
+.recentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px 16px 24px;
+}
+
+.recentTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+  margin: 0;
+}
+
+.clearAllButton {
+  background: none;
+  border: none;
+  color: #0095f6;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clearAllButton:hover {
+  color: #1877f2;
+}
+
+.recentList {
+  padding: 0 24px;
+}
+
+.recentItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.recentItem:hover {
+  background-color: #f5f5f5;
+}
+
+.recentIcon {
+  color: #8e8e8e;
+  flex-shrink: 0;
+}
+
+.recentItem span {
+  font-size: 14px;
+  color: #262626;
+}
+
+.noRecent {
+  padding: 20px 24px;
+  text-align: center;
+  color: #8e8e8e;
+  font-size: 14px;
+}
+
+@media (max-width: 1264px) {
+  .sidebar {
+    left: 72px;
+    
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    left: 0;
+    width: 100vw;
+    border-radius: 0;
+  }
+}

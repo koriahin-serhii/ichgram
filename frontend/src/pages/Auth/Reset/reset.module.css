@@ -1,0 +1,23 @@
+.screen {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  gap: 16px;
+}
+.form {
+  display: grid;
+  gap: 12px;
+}
+.actions {
+  display: grid;
+  gap: 8px;
+}
+.bottomLink {
+  color: var(--muted);
+}
+.bottomLink a {
+  color: var(--primary);
+}
+.success {
+  color: var(--muted);
+}

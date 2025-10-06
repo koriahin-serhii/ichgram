@@ -1,0 +1,55 @@
+.container {
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.image {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.placeholder {
+  border-radius: 50%;
+  background-color: #fafafa;
+  border: 1px solid #dbdbdb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon {
+  color: #8e8e8e;
+}
+
+/* Размеры */
+.small {
+  width: 32px;
+  height: 32px;
+}
+
+.small .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.medium {
+  width: 56px;
+  height: 56px;
+}
+
+.medium .icon {
+  width: 28px;
+  height: 28px;
+}
+
+.large {
+  width: 150px;
+  height: 150px;
+}
+
+.large .icon {
+  width: 60px;
+  height: 60px;
+}

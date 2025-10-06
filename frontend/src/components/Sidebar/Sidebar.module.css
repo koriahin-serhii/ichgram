@@ -1,0 +1,191 @@
+.sidebar {
+  width: 245px;
+  background: #fff;
+  border-right: 1px solid #dbdbdb;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1001;
+  height: 100vh;
+}
+
+.content {
+  padding: 28px 12px 20px 12px;
+  /* height: 100%; */
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  padding: 0px 0px 10px 12px;
+  margin-bottom: 10px;
+}
+
+.logoLink {
+  display: block;
+  text-decoration: none;
+}
+
+.nav {
+  flex: 1;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #000000;
+  transition: background-color 0.2s ease;
+  font-size: 16px;
+  font-weight: 400;
+  border: none;
+  background: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.navItem:hover {
+  background-color: #f5f5f5;
+}
+
+.navItem.active {
+  font-weight: 700;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 16px;
+}
+
+.label {
+  font-size: 16px;
+}
+
+.profile {
+  padding-top: 47px;
+}
+
+/* Profile Avatar Styles */
+.profileAvatar {
+  width: 24px;
+  height: 24px;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.avatarContainer {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarInner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid white;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatarPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.logoutBtn {
+  background: none;
+  border: none;
+  color: #000000;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 12px;
+  width: 100%;
+  text-align: left;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.logoutBtn:hover {
+  background-color: #f5f5f5;
+}
+
+.authLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.authLinks a {
+  color: #0095f6;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.authLinks a:hover {
+  background-color: #f5f5f5;
+}
+
+@media (max-width: 1264px) {
+  .sidebar {
+    width: 72px;
+  }
+
+  .content {
+    align-items: center;
+    padding-top: 20px;
+  }
+
+  .logo {
+    display: none;
+  }
+
+  .logoText {
+    display: none;
+  }
+
+  .label {
+    display: none;
+  }
+
+  .navItem {
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .icon {
+    margin-right: 0;
+  }
+
+  .logoutBtn {
+    display: none;
+  }
+}

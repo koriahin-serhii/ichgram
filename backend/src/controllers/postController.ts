@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
 import PostModel from '../models/postModel.js';
-import LikeModel from '../models/likeModel.js';
-import CommentModel from '../models/commentModel.js';
 import { Types } from 'mongoose';
 
 import { uploadPostImageToS3, deletePostImageFromS3 } from '../utils/s3.js';

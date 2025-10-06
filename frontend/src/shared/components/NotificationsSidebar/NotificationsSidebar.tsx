@@ -94,19 +94,9 @@ export default function NotificationsSidebar({
   };
 
   const handleNotificationClick = (notification: Notification) => {
-    console.log('Notification clicked:', notification._id, 'read status:', notification.read);
-    
     // Mark as read if not already read
     if (!notification.read) {
-      console.log('Marking notification as read...');
-      markAsRead.mutate(notification._id, {
-        onSuccess: () => {
-          console.log('Notification marked as read successfully');
-        },
-        onError: (error) => {
-          console.error('Error marking notification as read:', error);
-        },
-      });
+      markAsRead.mutate(notification._id);
     }
 
     if (notification.type === 'follow') {

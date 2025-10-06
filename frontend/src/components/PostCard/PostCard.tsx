@@ -12,6 +12,7 @@ import styles from './PostCard.module.css';
 
 interface PostCardProps {
   post: Post;
+  onPostClick?: (postId: string) => void;
 }
 
 // Simple time ago formatter
@@ -39,7 +40,7 @@ function timeAgo(date: string): string {
   return 'just now';
 }
 
-export default function PostCard({ post }: PostCardProps) {
+export default function PostCard({ post, onPostClick }: PostCardProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [liked, setLiked] = useState(false);
@@ -62,11 +63,11 @@ export default function PostCard({ post }: PostCardProps) {
   };
 
   const handleCommentClick = () => {
-    navigate(`/post/${post._id}`);
+    onPostClick?.(post._id);
   };
 
   const handleImageClick = () => {
-    navigate(`/post/${post._id}`);
+    onPostClick?.(post._id);
   };
 
   const postTimeAgo = post.createdAt ? timeAgo(post.createdAt) : '';

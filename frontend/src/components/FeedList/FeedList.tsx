@@ -7,9 +7,10 @@ interface FeedListProps {
   posts: Post[];
   isLoading?: boolean;
   error?: Error | null;
+  onPostClick?: (postId: string) => void;
 }
 
-export default function FeedList({ posts, isLoading, error }: FeedListProps) {
+export default function FeedList({ posts, isLoading, error, onPostClick }: FeedListProps) {
   if (isLoading) {
     return (
       <div className={styles.container}>
@@ -43,7 +44,7 @@ export default function FeedList({ posts, isLoading, error }: FeedListProps) {
     <div className={styles.container}>
       <div className={styles.feed}>
         {posts.map((post) => (
-          <PostCard key={post._id} post={post} />
+          <PostCard key={post._id} post={post} onPostClick={onPostClick} />
         ))}
       </div>
       <div className={styles.endMessage}>

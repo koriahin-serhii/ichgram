@@ -25,6 +25,7 @@ interface SidebarProps {
   onSearchClose: () => void;
   onCreateClick: () => void;
   onCreateClose: () => void;
+  onPostDetailClose?: () => void;
 }
 
 export default function Sidebar({ 
@@ -34,6 +35,7 @@ export default function Sidebar({
   onSearchClose,
   onCreateClick,
   onCreateClose,
+  onPostDetailClose,
 }: SidebarProps) {
   const { user, logout } = useAuth();
   const location = useLocation();
@@ -43,6 +45,7 @@ export default function Sidebar({
 
   const navItems = [
     {
+      id: 'home',
       path: '/',
       label: 'Home',
       icon: HomeIcon,
@@ -50,6 +53,7 @@ export default function Sidebar({
       onClick: undefined,
     },
     {
+      id: 'search',
       path: '#',
       label: 'Search',
       icon: SearchIcon,
@@ -57,6 +61,7 @@ export default function Sidebar({
       onClick: onSearchClick,
     },
     {
+      id: 'explore',
       path: '/explore',
       label: 'Explore',
       icon: ExploreIcon,
@@ -64,6 +69,7 @@ export default function Sidebar({
       onClick: undefined,
     },
     {
+      id: 'messages',
       path: '/messages',
       label: 'Messages',
       icon: MessagesIcon,
@@ -71,6 +77,7 @@ export default function Sidebar({
       onClick: undefined,
     },
     {
+      id: 'notifications',
       path: '/notifications',
       label: 'Notifications',
       icon: NotificationIcon,
@@ -78,6 +85,7 @@ export default function Sidebar({
       onClick: undefined,
     },
     {
+      id: 'create',
       path: '#',
       label: 'Create',
       icon: CreateIcon,
@@ -108,7 +116,7 @@ export default function Sidebar({
             if (item.onClick) {
               return (
                 <button
-                  key={item.path}
+                  key={item.id}
                   onClick={item.onClick}
                   className={`${styles.navItem} ${active ? styles.active : ''}`}
                 >
@@ -120,11 +128,12 @@ export default function Sidebar({
 
             return (
               <Link
-                key={item.path}
+                key={item.id}
                 to={item.path}
                 onClick={() => {
                   onSearchClose();
                   onCreateClose();
+                  onPostDetailClose?.();
                 }}
                 className={`${styles.navItem} ${active ? styles.active : ''}`}
               >
@@ -142,6 +151,7 @@ export default function Sidebar({
             onClick={() => {
               onSearchClose();
               onCreateClose();
+              onPostDetailClose?.();
             }}
           >
             <div className={styles.profileAvatar}>

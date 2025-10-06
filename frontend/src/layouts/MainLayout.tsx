@@ -4,12 +4,16 @@ import { useLocation } from 'react-router-dom';
 import Sidebar from '@components/Sidebar/Sidebar';
 import Footer from '@components/Footer/Footer';
 import { SearchSidebar, CreatePostModal } from '@shared/components';
+import PostDetailModal from '@shared/components/PostDetailModal/PostDetailModal';
+import { PostDetailProvider } from '@app/providers/PostDetailProvider';
+import { usePostDetail } from '@app/providers/usePostDetail';
 import styles from './MainLayout.module.css';
 
-export default function MainLayout({ children }: { children: ReactNode }) {
+function MainLayoutContent({ children }: { children: ReactNode }) {
   const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
+  const { selectedPostId, closePostDetail } = usePostDetail();
 
   const isAuthPage = ['/login', '/signup', '/reset'].includes(
     location.pathname
@@ -18,12 +22,14 @@ export default function MainLayout({ children }: { children: ReactNode }) {
   const handleSearchOpen = () => {
     setIsSearchOpen(true);
     setIsCreatePostOpen(false);
+    closePostDetail();
   };
   const handleSearchClose = () => setIsSearchOpen(false);
 
   const handleCreatePostOpen = () => {
     setIsCreatePostOpen(true);
     setIsSearchOpen(false);
+    closePostDetail();
   };
   const handleCreatePostClose = () => setIsCreatePostOpen(false);
 
@@ -37,6 +43,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
           onSearchClose={handleSearchClose}
           onCreateClick={handleCreatePostOpen}
           onCreateClose={handleCreatePostClose}
+          onPostDetailClose={closePostDetail}
         />
       )}
       <main
@@ -52,6 +59,22 @@ export default function MainLayout({ children }: { children: ReactNode }) {
         isOpen={isCreatePostOpen}
         onClose={handleCreatePostClose}
       />
+
+      {selectedPostId && (
+        <PostDetailModal
+          postId={selectedPostId}
+          isOpen={true}
+          onClose={closePostDetail}
+        />
+      )}
     </div>
+  );
+}
+
+export default function MainLayout({ children }: { children: ReactNode }) {
+  return (
+    <PostDetailProvider>
+      <MainLayoutContent>{children}</MainLayoutContent>
+    </PostDetailProvider>
   );
 }

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styles from './PostGrid.module.css';
 
 interface Post {
@@ -13,10 +12,10 @@ interface Post {
 interface PostGridProps {
   posts: Post[];
   isLoading?: boolean;
+  onPostClick?: (postId: string) => void;
 }
 
-export default function PostGrid({ posts, isLoading }: PostGridProps) {
-  const navigate = useNavigate();
+export default function PostGrid({ posts, isLoading, onPostClick }: PostGridProps) {
   const [hoveredPost, setHoveredPost] = useState<string | null>(null);
 
   if (isLoading) {
@@ -50,7 +49,7 @@ export default function PostGrid({ posts, isLoading }: PostGridProps) {
           <div
             key={post._id}
             className={styles.post}
-            onClick={() => navigate(`/post/${post._id}`)}
+            onClick={() => onPostClick?.(post._id)}
             onMouseEnter={() => setHoveredPost(post._id)}
             onMouseLeave={() => setHoveredPost(null)}
           >

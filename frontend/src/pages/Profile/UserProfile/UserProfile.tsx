@@ -3,10 +3,12 @@ import { useUserProfile } from '@shared/api/users';
 import { useUserPosts } from '@shared/api/posts';
 import { useIsFollowing, useFollowUser, useUnfollowUser } from '@shared/api/follow';
 import { ProfileHeader, PostGrid } from '@shared/components';
+import { usePostDetail } from '@app/providers/usePostDetail';
 import styles from './UserProfile.module.css';
 
 export default function UserProfile() {
   const { id } = useParams<{ id: string }>();
+  const { openPostDetail } = usePostDetail();
   
   const { data: profileData, isLoading: profileLoading, error: profileError } = useUserProfile(id || '');
   const { data: posts = [], isLoading: postsLoading, error: postsError } = useUserPosts(id || '');
@@ -68,6 +70,7 @@ export default function UserProfile() {
           <PostGrid 
             posts={posts} 
             isLoading={postsLoading}
+            onPostClick={openPostDetail}
           />
         )}
       </div>

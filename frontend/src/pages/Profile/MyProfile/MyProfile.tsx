@@ -2,10 +2,12 @@ import useAuth from '@app/providers/useAuth';
 import { useMyProfile } from '@shared/api/users';
 import { useUserPosts } from '@shared/api/posts';
 import { ProfileHeader, PostGrid } from '@shared/components';
+import { usePostDetail } from '@app/providers/usePostDetail';
 import styles from './MyProfile.module.css';
 
 export default function MyProfile() {
   const { user: currentUser } = useAuth();
+  const { openPostDetail } = usePostDetail();
   const {
     data: profileData,
     isLoading: profileLoading,
@@ -43,7 +45,11 @@ export default function MyProfile() {
         {postsError ? (
           <div className={styles.error}>Failed to load posts.</div>
         ) : (
-          <PostGrid posts={posts} isLoading={postsLoading} />
+          <PostGrid 
+            posts={posts} 
+            isLoading={postsLoading}
+            onPostClick={openPostDetail}
+          />
         )}
       </div>
     </div>

@@ -2,12 +2,14 @@ import { useMemo } from 'react';
 import { useFeed } from '@shared/api/posts';
 import FeedList from '@components/FeedList/FeedList';
 import useAuth from '@app/providers/useAuth';
+import { usePostDetail } from '@app/providers/usePostDetail';
 import type { Post } from '@shared/api/posts';
 import styles from './Home.module.css';
 
 export default function Home() {
   const { user } = useAuth();
   const { data: posts, isLoading, error } = useFeed();
+  const { openPostDetail } = usePostDetail();
 
   // Get posts excluding own posts
   const feedPosts = useMemo(() => {
@@ -19,7 +21,12 @@ export default function Home() {
 
   return (
     <div className={styles.wrapper}>
-      <FeedList posts={feedPosts} isLoading={isLoading} error={error} />
+      <FeedList 
+        posts={feedPosts} 
+        isLoading={isLoading} 
+        error={error}
+        onPostClick={openPostDetail}
+      />
     </div>
   );
 }

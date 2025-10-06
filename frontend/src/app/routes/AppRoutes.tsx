@@ -6,7 +6,6 @@ import Notifications from '@pages/Notifications/Notifications';
 import MyProfile from '@pages/Profile/MyProfile/MyProfile';
 import UserProfile from '@pages/Profile/UserProfile/UserProfile';
 import EditProfile from '@pages/Profile/EditProfile/EditProfile';
-import PostDetail from '@pages/Post/PostDetail/PostDetail';
 import AddPost from '@pages/Post/AddPost/AddPost';
 import EditPost from '@pages/Post/EditPost/EditPost';
 import Login from '@pages/Auth/Login/Login';
@@ -40,7 +39,6 @@ export default function AppRoutes() {
 
         {/* Posts */}
         <Route path="/post/new" element={<AddPost />} />
-        <Route path="/post/:id" element={<PostDetail />} />
         <Route path="/post/:id/edit" element={<EditPost />} />
       </Route>
 

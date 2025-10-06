@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useSearchUsers } from '@shared/api/search';
 import useAuth from '@app/providers/useAuth';
-import UserSearchResult from '../UsesrSearchResult/UserSearchResult';
+import UserSearchResult from '../UserSearchResult/UserSearchResult';
 import styles from './SearchSidebar.module.css';
 
 interface SearchSidebarProps {

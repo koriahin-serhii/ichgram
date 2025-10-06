@@ -1,0 +1,44 @@
+.container {
+  display: flex;
+  height: calc(100vh - 200px); /* Minus navbar height */
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 0 auto; 
+  max-width: 1240px;
+}
+
+.conversationsPanel {
+  width: 350px;
+  flex-shrink: 0;
+}
+
+.chatPanel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyChatState {
+  text-align: center;
+  padding: 40px;
+}
+
+.emptyIcon {
+  color: #262626;
+  margin-bottom: 16px;
+}
+
+.emptyChatState h2 {
+  font-size: 22px;
+  font-weight: 300;
+  margin: 0 0 8px 0;
+  color: #262626;
+}
+
+.emptyChatState p {
+  font-size: 14px;
+  color: #8e8e8e;
+  margin: 0;
+}

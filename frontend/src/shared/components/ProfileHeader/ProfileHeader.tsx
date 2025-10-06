@@ -28,6 +28,18 @@ export default function ProfileHeader({
     }
   };
 
+  const handleMessageClick = () => {
+    // Navigate to messages page with this user selected
+    // We'll store the userId in URL state
+    navigate('/messages', {
+      state: {
+        userId: user._id,
+        userName: user.name,
+        userImage: user.profileImage,
+      },
+    });
+  };
+
   return (
     <div className={styles.header}>
       <div className={styles.avatar}>
@@ -59,7 +71,12 @@ export default function ProfileHeader({
                 >
                   {user.isFollowing ? 'Unfollow' : 'Follow'}
                 </button>
-                <button className={styles.messageButton}>Message</button>
+                <button
+                  className={styles.messageButton}
+                  onClick={handleMessageClick}
+                >
+                  Message
+                </button>
               </>
             )}
           </div>

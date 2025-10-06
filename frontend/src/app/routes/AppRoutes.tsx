@@ -28,7 +28,7 @@ export default function AppRoutes() {
         {/* Main */}
         <Route path="/" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
-        <Route path="/messages" element={<Messages />} />
+        <Route path="/messages/*" element={<Messages />} />
 
         {/* Profile */}
         <Route path="/my-profile" element={<MyProfile />} />

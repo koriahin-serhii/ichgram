@@ -13,6 +13,29 @@ import MoreIcon from '@assets/icons/more.svg?react';
 import CommentIcon from '@assets/icons/comment.svg?react';
 import styles from './PostDetailModal.module.css';
 
+const EMOJI_LIST = [
+  '😀',
+  '😂',
+  '🥰',
+  '😍',
+  '🤩',
+  '😎',
+  '🥳',
+  '😇',
+  '🙏',
+  '👍',
+  '❤️',
+  '🔥',
+  '✨',
+  '🎉',
+  '💯',
+  '🌟',
+  '💪',
+  '👏',
+  '🙌',
+  '🎊',
+];
+
 // Simple time ago formatter
 function timeAgo(date: string): string {
   const seconds = Math.floor(
@@ -49,6 +72,7 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
   const { user } = useAuth();
   const [comment, setComment] = useState('');
   const [showOptionsModal, setShowOptionsModal] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const {
     data: post,
@@ -77,6 +101,11 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
     toggleLike.mutate(postId);
   };
 
+  const handleEmojiClick = (emoji: string) => {
+    setComment((prev) => prev + emoji);
+    setShowEmojiPicker(false);
+  };
+
   const handleFollow = () => {
     if (!post?.author?._id) return;
     followUser.mutate(post.author._id);
@@ -96,6 +125,7 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
       {
         onSuccess: () => {
           setComment('');
+          setShowEmojiPicker(false);
         },
       }
     );
@@ -345,11 +375,27 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
 
             {/* Add comment form */}
             <form className={styles.addCommentForm} onSubmit={handleAddComment}>
+              <button
+                type="button"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                className={styles.emojiBtn}
+                aria-label="Add emoji"
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9c.83 0 1.5-.67 1.5-1.5S7.83 8 7 8s-1.5.67-1.5 1.5S6.17 11 7 11zm10 0c.83 0 1.5-.67 1.5-1.5S17.83 8 17 8s-1.5.67-1.5 1.5.67 1.5 1.5 1.5zm-5 6c2.21 0 4-1.79 4-4h-8c0 2.21 1.79 4 4 4z" />
+                </svg>
+              </button>
               <input
                 type="text"
                 placeholder="Add a comment..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
+                onFocus={() => setShowEmojiPicker(false)}
                 className={styles.commentInput}
               />
               <button
@@ -359,6 +405,22 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
               >
                 Post
               </button>
+              
+              {/* Emoji picker */}
+              {showEmojiPicker && (
+                <div className={styles.emojiPicker}>
+                  {EMOJI_LIST.map((emoji) => (
+                    <button
+                      key={emoji}
+                      type="button"
+                      onClick={() => handleEmojiClick(emoji)}
+                      className={styles.emojiItem}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              )}
             </form>
           </div>
         </div>

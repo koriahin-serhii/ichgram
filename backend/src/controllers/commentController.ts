@@ -10,12 +10,14 @@ interface AuthenticatedRequest extends Request {
 export const addComment = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user;
-    const { postId, text } = req.body;
+    const { postId, content } = req.body;
     const comment = await CommentModel.create({
       user: userId,
       post: postId,
-      text,
+      content,
     });
+    // Populate user information
+    await comment.populate('user', '_id name profileImage');
     res.status(201).json(comment);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
@@ -26,10 +28,9 @@ export const addComment = async (req: AuthenticatedRequest, res: Response) => {
 export const getComments = async (req: Request, res: Response) => {
   try {
     const { postId } = req.params;
-    const comments = await CommentModel.find({ post: postId }).populate(
-      'user',
-      'name'
-    );
+    const comments = await CommentModel.find({ post: postId })
+      .populate('user', '_id name profileImage')
+      .sort({ createdAt: 1 }); // Sort by creation time, oldest first
     res.json(comments);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

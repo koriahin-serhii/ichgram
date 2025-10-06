@@ -317,11 +317,33 @@
 
 /* Add Comment Form */
 .addCommentForm {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 16px;
   border-top: 1px solid #efefef;
+}
+
+.emojiBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #262626;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.emojiBtn:hover {
+  color: #737373;
+}
+
+.emojiBtn svg {
+  width: 24px;
+  height: 24px;
 }
 
 .commentInput {
@@ -353,6 +375,36 @@
 .postBtn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+
+.emojiPicker {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #efefef;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.emojiItem {
+  border: none;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.emojiItem:hover {
+  background: #f0f0f0;
 }
 
 /* Options Modal */
@@ -442,5 +494,9 @@
 
   .optionsModal {
     min-width: 90%;
+  }
+  
+  .emojiPicker {
+    grid-template-columns: repeat(8, 1fr);
   }
 }

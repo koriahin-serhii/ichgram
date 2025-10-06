@@ -1,19 +1,20 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
 export interface Comment extends Document {
-  text: string;
+  content: string;
   user: Types.ObjectId;
   post: Types.ObjectId;
   createdAt: Date;
+  updatedAt: Date;
 }
 
 const commentSchema = new Schema<Comment>(
   {
-    text: { type: String, required: true },
+    content: { type: String, required: true },
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     post: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
   },
-  { timestamps: { createdAt: true, updatedAt: false } }
+  { timestamps: true }
 );
 
 const CommentModel = mongoose.model<Comment>('Comment', commentSchema);

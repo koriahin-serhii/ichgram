@@ -2,10 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import type { Post } from '@shared/api/posts';
 import { useToggleLike, useLikes } from '@shared/api/likes';
 import { useComments } from '@shared/api/comments';
-import {
-  useIsFollowing,
-  useFollowUser,
-} from '@shared/api/follow';
+import { useIsFollowing, useFollowUser } from '@shared/api/follow';
 import useAuth from '@app/providers/useAuth';
 import styles from './PostCard.module.css';
 
@@ -50,9 +47,12 @@ export default function PostCard({ post, onPostClick }: PostCardProps) {
   const followUser = useFollowUser();
 
   const isOwnPost = user?.id === post.author?._id;
-  
+
   // Check if current user has liked this post
-  const liked = likesData?.likes?.some((like: { user: string }) => like.user === user?.id) || false;
+  const liked =
+    likesData?.likes?.some(
+      (like: { user: string }) => like.user === user?.id
+    ) || false;
   const likesCount = likesData?.count || 0;
 
   const handleLike = () => {
@@ -73,8 +73,6 @@ export default function PostCard({ post, onPostClick }: PostCardProps) {
   };
 
   const postTimeAgo = post.createdAt ? timeAgo(post.createdAt) : '';
-
-  const firstComment = comments[0];
 
   return (
     <article className={styles.card}>
@@ -162,6 +160,7 @@ export default function PostCard({ post, onPostClick }: PostCardProps) {
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
+              style={{ transform: 'scaleX(-1)' }}
             >
               <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
             </svg>
@@ -172,34 +171,46 @@ export default function PostCard({ post, onPostClick }: PostCardProps) {
       {/* Likes */}
       {likesCount > 0 && (
         <div className={styles.likes}>
-          <strong>{likesCount} {likesCount === 1 ? 'like' : 'likes'}</strong>
+          <strong>
+            {likesCount} {likesCount === 1 ? 'like' : 'likes'}
+          </strong>
         </div>
       )}
 
-      {/* Description */}
+      {/* Description as first "comment" from author */}
       {post.description && (
         <div className={styles.description}>
           <span className={styles.authorName}>{post.author?.name}</span>{' '}
-          <span>{post.description}</span>
+          <span className={styles.descriptionText}>{post.description}</span>
         </div>
       )}
 
       {/* Comments */}
       {comments.length > 0 && (
         <div className={styles.comments}>
-          <button
-            className={styles.viewAllComments}
-            onClick={handleCommentClick}
-          >
-            View all {comments.length} comments
-          </button>
-          {firstComment && (
+          {/* First comment - truncated with "...more" */}
+          {comments[0] && (
             <div className={styles.comment}>
               <span className={styles.commentAuthor}>
-                {firstComment.user.name}
+                {comments[0].user.name}
               </span>{' '}
-              <span>{firstComment.content}</span>
+              <span className={styles.truncatedComment}>
+                {comments[0].content.slice(0, 2)}...
+                <button className={styles.moreBtn} onClick={handleCommentClick}>
+                  more
+                </button>
+              </span>
             </div>
+          )}
+
+          {/* View all comments */}
+          {comments.length > 0 && (
+            <button
+              className={styles.viewAllComments}
+              onClick={handleCommentClick}
+            >
+              View all comments ({comments.length})
+            </button>
           )}
         </div>
       )}

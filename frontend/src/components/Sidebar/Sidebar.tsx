@@ -17,6 +17,7 @@ import MessagesActiveIcon from '@assets/icons/messages-active.svg?react';
 import NotificationIcon from '@assets/icons/notification.svg?react';
 import NotificationActiveIcon from '@assets/icons/notification-active.svg?react';
 import CreateIcon from '@assets/icons/create.svg?react';
+import LogoutIcon from '@assets/icons/logout.svg?react';
 
 interface SidebarProps {
   isSearchOpen: boolean;
@@ -171,22 +172,19 @@ export default function Sidebar({
             }}
           >
             <div className={styles.profileAvatar}>
-              <div className={styles.avatarContainer}>
-                <div className={styles.avatarInner}>
-                  {user?.profileImage ? (
-                    <img src={user.profileImage} alt={user.name} className={styles.avatarImage} />
-                  ) : (
-                    <div className={styles.avatarPlaceholder}>
-                      {user?.name?.[0]?.toUpperCase() || 'U'}
-                    </div>
-                  )}
+              {user?.profileImage ? (
+                <img src={user.profileImage} alt={user.name} className={styles.avatarImage} />
+              ) : (
+                <div className={styles.avatarPlaceholder}>
+                  {user?.name?.[0]?.toUpperCase() || 'U'}
                 </div>
-              </div>
+              )}
             </div>
             <span className={styles.label}>Profile</span>
           </Link>
-          <button onClick={logout} className={styles.logoutBtn}>
-            Logout
+          <button onClick={logout} className={styles.navItem}>
+            <LogoutIcon className={styles.icon} />
+            <span className={styles.label}>Logout</span>
           </button>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMessages, useSendMessage } from '../../../shared/api/messages';
 import useAuth from '../../../app/providers/useAuth';
+import { ChatUserInfo } from './ChatUserInfo';
 import styles from './ChatView.module.css';
 
 export const ChatView = () => {
@@ -75,16 +76,51 @@ export const ChatView = () => {
 
       {/* Messages area */}
       <div className={styles.messagesArea}>
+        {/* User info card */}
+        {otherUser && messages && messages.length > 0 && (
+          <ChatUserInfo
+            userId={otherUser._id}
+            name={otherUser.name}
+            fullName={otherUser.fullName}
+            profileImage={otherUser.profileImage}
+            createdAt={messages[0].createdAt}
+          />
+        )}
+
         {messages?.map((msg) => {
           const isOwn = msg.sender._id === currentUser?.id;
+          const sender = isOwn ? currentUser : otherUser;
+          
           return (
             <div
               key={msg._id}
               className={`${styles.messageWrapper} ${isOwn ? styles.own : styles.other}`}
             >
+              {!isOwn && (
+                <div className={styles.messageAvatar}>
+                  {sender?.profileImage ? (
+                    <img src={sender.profileImage} alt={sender.name} />
+                  ) : (
+                    <div className={styles.avatarPlaceholder}>
+                      {sender?.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+              )}
               <div className={styles.message}>
                 <p>{msg.text}</p>
               </div>
+              {isOwn && (
+                <div className={styles.messageAvatar}>
+                  {sender?.profileImage ? (
+                    <img src={sender.profileImage} alt={sender.name} />
+                  ) : (
+                    <div className={styles.avatarPlaceholder}>
+                      {sender?.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           );
         })}

@@ -38,6 +38,7 @@ export const getConversations = async (
           },
           lastMessage: { $first: '$text' },
           lastMessageDate: { $first: '$createdAt' },
+          lastMessageSender: { $first: '$sender' },
         },
       },
       {
@@ -58,6 +59,7 @@ export const getConversations = async (
           profileImage: '$user.profileImage',
           lastMessage: 1,
           lastMessageDate: 1,
+          lastMessageSender: 1,
         },
       },
       {
@@ -82,8 +84,8 @@ export const getMessages = async (req: AuthenticatedRequest, res: Response) => {
         { sender: userId, recipient: currentUserId },
       ],
     })
-      .populate('sender', '_id name profileImage')
-      .populate('recipient', '_id name profileImage')
+      .populate('sender', '_id name fullName profileImage')
+      .populate('recipient', '_id name fullName profileImage')
       .sort({ createdAt: 1 });
     res.json(messages);
   } catch (error) {
@@ -109,8 +111,8 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
     });
 
     await message.save();
-    await message.populate('sender', '_id name profileImage');
-    await message.populate('recipient', '_id name profileImage');
+    await message.populate('sender', '_id name fullName profileImage');
+    await message.populate('recipient', '_id name fullName profileImage');
 
     res.status(201).json(message);
   } catch (error) {

@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useConversations } from '../../../shared/api/messages';
 import useAuth from '../../../app/providers/useAuth';
 import styles from './ConversationsList.module.css';
@@ -10,19 +10,24 @@ const formatTime = (date: string) => {
   const diffInMinutes = Math.floor(diffInMs / 60000);
   const diffInHours = Math.floor(diffInMs / 3600000);
   const diffInDays = Math.floor(diffInMs / 86400000);
+  const diffInWeeks = Math.floor(diffInDays / 7);
 
   if (diffInMinutes < 1) return 'now';
   if (diffInMinutes < 60) return `${diffInMinutes}m`;
   if (diffInHours < 24) return `${diffInHours}h`;
   if (diffInDays < 7) return `${diffInDays}d`;
+  if (diffInWeeks < 5) return `${diffInWeeks} wek`;
   return messageDate.toLocaleDateString();
 };
 
 export const ConversationsList = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { userId: activeUserId } = useParams();
+  const location = useLocation();
   const { data: conversations, isLoading } = useConversations();
+
+  // Extract userId from pathname like /messages/68d1a4a2e45b39fbbc7060f0
+  const activeUserId = location.pathname.split('/messages/')[1] || null;
 
   if (isLoading) {
     return (
@@ -51,6 +56,9 @@ export const ConversationsList = () => {
         ) : (
           conversations.map((conv) => {
             const isActive = conv._id === activeUserId;
+            const isOwnMessage = conv.lastMessageSender === user?.id;
+            const messageSender = isOwnMessage ? 'You' : conv.name;
+            
             return (
               <div
                 key={conv._id}
@@ -69,9 +77,10 @@ export const ConversationsList = () => {
                 <div className={styles.conversationInfo}>
                   <div className={styles.conversationHeader}>
                     <span className={styles.name}>{conv.name}</span>
-                    <span className={styles.time}>{formatTime(conv.lastMessageDate)}</span>
                   </div>
-                  <p className={styles.lastMessage}>{conv.lastMessage}</p>
+                  <p className={styles.lastMessage}>
+                    {messageSender} sent a message · {formatTime(conv.lastMessageDate)}
+                  </p>
                 </div>
               </div>
             );

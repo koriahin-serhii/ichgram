@@ -46,7 +46,13 @@ export default function Sidebar({
   const { user, logout } = useAuth();
   const location = useLocation();
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === path;
+    }
+    // For paths like /messages, check if pathname starts with it
+    return location.pathname.startsWith(path);
+  };
   const isProfileActive = location.pathname === '/my-profile';
 
   const navItems = [

@@ -9,11 +9,13 @@ export interface Message {
   sender: {
     _id: string;
     name: string;
+    fullName?: string;
     profileImage?: string;
   };
   recipient: {
     _id: string;
     name: string;
+    fullName?: string;
     profileImage?: string;
   };
   createdAt: string;
@@ -25,6 +27,7 @@ export interface Conversation {
   profileImage?: string;
   lastMessage: string;
   lastMessageDate: string;
+  lastMessageSender: string;
 }
 
 // Query keys

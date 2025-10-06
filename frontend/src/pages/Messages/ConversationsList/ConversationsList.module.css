@@ -8,8 +8,7 @@
 }
 
 .header {
-  padding: 20px 24px;
-  /* border-bottom: 1px solid #dbdbdb; */
+  padding: 36px 24px;
 }
 
 .userInfo {
@@ -19,8 +18,8 @@
 }
 
 .username {
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   color: #262626;
 }
 

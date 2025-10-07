@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Post } from '@shared/api/posts';
 import { useToggleLike, useLikes } from '@shared/api/likes';
@@ -39,6 +40,7 @@ function timeAgo(date: string): string {
 export default function PostCard({ post, onPostClick }: PostCardProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [isFirstCommentExpanded, setIsFirstCommentExpanded] = useState(false);
 
   const toggleLike = useToggleLike();
   const { data: comments = [] } = useComments(post._id);
@@ -194,12 +196,32 @@ export default function PostCard({ post, onPostClick }: PostCardProps) {
               <span className={styles.commentAuthor}>
                 {comments[0].user.name}
               </span>{' '}
-              <span className={styles.truncatedComment}>
-                {comments[0].content.slice(0, 2)}...
-                <button className={styles.moreBtn} onClick={handleCommentClick}>
-                  more
-                </button>
-              </span>
+              {isFirstCommentExpanded ? (
+                <span className={styles.commentText}>
+                  {comments[0].content}{' '}
+                  {comments[0].content.length > 2 && (
+                    <button
+                      className={styles.moreBtn}
+                      onClick={() => setIsFirstCommentExpanded(false)}
+                    >
+                      less
+                    </button>
+                  )}
+                </span>
+              ) : (
+                <span className={styles.truncatedComment}>
+                  {comments[0].content.slice(0, 2)}
+                  {comments[0].content.length > 2 && '... '}
+                  {comments[0].content.length > 2 && (
+                    <button
+                      className={styles.moreBtn}
+                      onClick={() => setIsFirstCommentExpanded(true)}
+                    >
+                      more
+                    </button>
+                  )}
+                </span>
+              )}
             </div>
           )}
 

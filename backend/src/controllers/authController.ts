@@ -73,3 +73,32 @@ export const logout = (req: Request, res: Response) => {
   });
   res.json({ message: 'Logout successful' });
 };
+
+// Get current user (protected route)
+export const getCurrentUser = async (req: Request, res: Response) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(401).json({ message: 'Not authenticated' });
+    }
+
+    const decoded = jwt.verify(token, jwtKey) as { userId: string };
+    const user = await User.findById(decoded.userId).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        fullName: user.fullName,
+        profileImage: user.profileImage,
+      },
+    });
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
+};

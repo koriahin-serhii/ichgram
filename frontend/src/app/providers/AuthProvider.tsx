@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { AuthAPI } from '@api';
@@ -7,8 +7,25 @@ import { AuthContext, type AuthUser, type AuthContextValue } from './authContext
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with true to check auth on mount
   const [error, setError] = useState<string | null>(null);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await AuthAPI.getCurrentUser();
+        setUser(res.user ?? null);
+      } catch {
+        // User not authenticated or token expired
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    checkAuth();
+  }, []);
 
   const value = useMemo<AuthContextValue>(() => ({
     user,
@@ -56,6 +73,22 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     },
     setUser,
   }), [user, loading, error, queryClient]);
+
+  // Show loading indicator while checking auth
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        fontSize: '18px',
+        color: '#8e8e8e'
+      }}>
+        Loading...
+      </div>
+    );
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

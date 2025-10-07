@@ -22,3 +22,8 @@ export async function register(data: RegisterPayload) {
 export async function logout() {
   await api.post('/api/auth/logout');
 }
+
+export async function getCurrentUser() {
+  const res = await api.get<AuthResponse>('/api/auth/me');
+  return res.data;
+}

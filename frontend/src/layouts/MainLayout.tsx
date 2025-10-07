@@ -3,7 +3,11 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from '@components/Sidebar/Sidebar';
 import Footer from '@components/Footer/Footer';
-import { SearchSidebar, NotificationsSidebar, CreatePostModal } from '@shared/components';
+import {
+  SearchSidebar,
+  NotificationsSidebar,
+  CreatePostModal,
+} from '@shared/components';
 import PostDetailModal from '@shared/components/PostDetailModal/PostDetailModal';
 import { PostDetailProvider } from '@app/providers/PostDetailProvider';
 import { usePostDetail } from '@app/providers/usePostDetail';
@@ -65,11 +69,24 @@ function MainLayoutContent({ children }: { children: ReactNode }) {
       >
         {children}
       </main>
-      {!isAuthPage && <Footer />}
+      {!isAuthPage && (
+        <Footer
+          onSearchClick={handleSearchOpen}
+          onSearchClose={handleSearchClose}
+          onNotificationsClick={handleNotificationsOpen}
+          onNotificationsClose={handleNotificationsClose}
+          onCreateClick={handleCreatePostOpen}
+          onCreateClose={handleCreatePostClose}
+          onPostDetailClose={closePostDetail}
+        />
+      )}
 
       <SearchSidebar isOpen={isSearchOpen} onClose={handleSearchClose} />
-      
-      <NotificationsSidebar isOpen={isNotificationsOpen} onClose={handleNotificationsClose} />
+
+      <NotificationsSidebar
+        isOpen={isNotificationsOpen}
+        onClose={handleNotificationsClose}
+      />
 
       <CreatePostModal
         isOpen={isCreatePostOpen}

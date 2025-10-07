@@ -5,12 +5,12 @@
 }
 
 .main {
-  /* padding: 16px; */
   flex: 1;
 }
 
 .main.withSidebar {
   margin-left: 245px;
+  border-left: 1px solid #dbdbdb;
 }
 
 @media (max-width: 1264px) {

@@ -1,7 +1,7 @@
 .sidebar {
   width: 245px;
   background: #fff;
-  border-right: 1px solid #dbdbdb;
+  /* border-right: 1px solid #dbdbdb; */
   position: fixed;
   left: 0;
   top: 0;

@@ -14,6 +14,7 @@ interface AuthenticatedRequest extends Request {
 interface UpdateProfileData {
   name?: string;
   bio?: string;
+  website?: string;
   profileImage?: string;
 }
 
@@ -38,10 +39,11 @@ export const updateProfile = async (
 ) => {
   try {
     const userId = req.user;
-    const { name, bio } = req.body;
+    const { name, bio, website } = req.body;
     const updateData: UpdateProfileData = {};
     if (name) updateData.name = name;
     if (bio) updateData.bio = bio;
+    if (website !== undefined) updateData.website = website; // Allow empty string to clear website
     if (req.file) {
       // Get the user to delete the old avatar
       const user = await User.findById(userId);

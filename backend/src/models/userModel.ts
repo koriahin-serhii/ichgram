@@ -8,6 +8,7 @@ export interface User extends Document {
   fullName: string;
   profileImage?: string;
   bio?: string;
+  website?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -19,6 +20,7 @@ const userSchema = new Schema<User>(
     fullName: { type: String, required: true },
     profileImage: { type: String },
     bio: { type: String },
+    website: { type: String },
   },
   { timestamps: true }
 );

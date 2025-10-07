@@ -6,12 +6,12 @@
 
 .header {
   margin-bottom: 40px;
-  text-align: center;
+  text-align: left;
 }
 
 .header h1 {
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   color: #262626;
   margin: 0;
 }
@@ -34,25 +34,41 @@
 .avatarSection {
   display: flex;
   align-items: center;
-  gap: 24px;
-  padding: 16px 0;
+  gap: 16px;
+  padding: 16px 16px;
+  background: #efefef;
+  border-radius: 20px;
 }
 
-.avatarActions h2 {
-  font-size: 20px;
-  font-weight: 400;
+.userInfo {
+  flex: 1;
+}
+
+.userInfo h2 {
+  font-size: 16px;
+  font-weight: 700;
   color: #262626;
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
+}
+
+.fullName {
+  font-size: 14px;
+  font-weight: 400;
+  color: #737373;
+  margin: 0;
 }
 
 .changePhotoButton {
   background: none;
   border: none;
-  color: #0095f6;
+  color: #ffffff;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  padding: 0;
+  padding: 8px 24px;
+  white-space: nowrap;
+  background-color: #0095f6;
+  border-radius: 8px;
 }
 
 .changePhotoButton:hover {
@@ -71,7 +87,7 @@
 
 .label {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   color: #262626;
   margin-right: 16px;
   min-width: 120px;
@@ -93,11 +109,18 @@
   background: white;
 }
 
+.charCounter {
+  text-align: right;
+  font-size: 12px;
+  color: #8e8e8e;
+  margin-top: 4px;
+}
+
 .actions {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
-  padding-top: 24px;
+  padding-top: 24px;;
 }
 
 .submitButton {
@@ -109,6 +132,7 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  flex: 1;
 }
 
 .submitButton:hover:not(:disabled) {
@@ -129,6 +153,7 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  flex: 1;
 }
 
 .cancelButton:hover {

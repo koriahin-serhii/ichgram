@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UserAvatar from '../UserAvatar/UserAvatar';
 import styles from './ProfileHeader.module.css';
 import type { UserProfile } from '../../api/users';
 
@@ -19,6 +19,7 @@ export default function ProfileHeader({
   isFollowLoading = false,
 }: ProfileHeaderProps) {
   const navigate = useNavigate();
+  const [isBioExpanded, setIsBioExpanded] = useState(false);
 
   const handleFollowClick = () => {
     if (user.isFollowing) {
@@ -42,8 +43,16 @@ export default function ProfileHeader({
 
   return (
     <div className={styles.header}>
-      <div className={styles.avatar}>
-        <UserAvatar src={user.profileImage} alt={user.fullName} size="large" />
+      <div className={styles.avatarWrapper}>
+        <div className={styles.avatarContainer}>
+          {user.profileImage ? (
+            <img src={user.profileImage} alt={user.fullName} className={styles.avatarImage} />
+          ) : (
+            <div className={styles.avatarPlaceholder}>
+              {user.name?.charAt(0).toUpperCase() || 'U'}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className={styles.info}>
@@ -98,7 +107,32 @@ export default function ProfileHeader({
         </div>
 
         <div className={styles.details}>
-          {user.bio && <div className={styles.bio}>{user.bio}</div>}
+          {user.bio && (
+            <div className={styles.bioContainer}>
+              <span className={isBioExpanded ? styles.bioExpanded : styles.bioCollapsed}>
+                {user.bio}
+                {!isBioExpanded && user.bio.length > 100 && '... '}
+              </span>
+              {user.bio.length > 100 && (
+                <button 
+                  className={styles.moreBtn}
+                  onClick={() => setIsBioExpanded(!isBioExpanded)}
+                >
+                  {isBioExpanded ? 'less' : 'more'}
+                </button>
+              )}
+            </div>
+          )}
+          {user.website && (
+            <a 
+              href={user.website.startsWith('http') ? user.website : `https://${user.website}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.website}
+            >
+              {user.website}
+            </a>
+          )}
         </div>
       </div>
     </div>

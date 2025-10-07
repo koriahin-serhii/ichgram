@@ -14,6 +14,7 @@ export default function EditProfile() {
   const [formData, setFormData] = useState({
     fullName: '',
     bio: '',
+    website: '',
   });
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -24,6 +25,7 @@ export default function EditProfile() {
       setFormData({
         fullName: profileData.fullName || '',
         bio: profileData.bio || '',
+        website: profileData.website || '',
       });
     }
   }, [profileData]);
@@ -32,6 +34,12 @@ export default function EditProfile() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+    
+    // Ограничение для поля bio - 150 символов
+    if (name === 'bio' && value.length > 150) {
+      return;
+    }
+    
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -54,6 +62,7 @@ export default function EditProfile() {
       await updateProfileMutation.mutateAsync({
         fullName: formData.fullName,
         bio: formData.bio,
+        website: formData.website,
         profileImage: selectedImage || undefined,
       });
 
@@ -86,25 +95,26 @@ export default function EditProfile() {
           <UserAvatar
             src={previewUrl || profileData?.profileImage}
             alt={profileData?.fullName}
-            size="large"
+            size="medium"
           />
-          <div className={styles.avatarActions}>
+          <div className={styles.userInfo}>
             <h2>{profileData?.name}</h2>
-            <button
-              type="button"
-              className={styles.changePhotoButton}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              New photo
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleImageSelect}
-              className={styles.hiddenInput}
-            />
+            <p className={styles.fullName}>{profileData?.fullName}</p>
           </div>
+          <button
+            type="button"
+            className={styles.changePhotoButton}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            New photo
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageSelect}
+            className={styles.hiddenInput}
+          />
         </div>
 
         <div className={styles.field}>
@@ -123,6 +133,21 @@ export default function EditProfile() {
         </div>
 
         <div className={styles.field}>
+          <label htmlFor="website" className={styles.label}>
+            Website
+          </label>
+          <input
+            id="website"
+            name="website"
+            type="text"
+            value={formData.website}
+            onChange={handleInputChange}
+            className={styles.input}
+            placeholder="Website"
+          />
+        </div>
+
+        <div className={styles.field}>
           <label htmlFor="bio" className={styles.label}>
             About
           </label>
@@ -135,6 +160,7 @@ export default function EditProfile() {
             placeholder="About"
             rows={3}
           />
+          <div className={styles.charCounter}>{formData.bio.length}/150</div>
         </div>
 
         <div className={styles.actions}>

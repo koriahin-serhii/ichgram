@@ -11,6 +11,7 @@ export interface User {
   fullName: string;
   profileImage?: string;
   bio?: string;
+  website?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -133,6 +134,7 @@ interface UpdateProfileData {
   fullName?: string;
   bio?: string;
   profileImage?: File;
+  website?: string;
 }
 
 export function useUpdateProfile() {
@@ -144,6 +146,7 @@ export function useUpdateProfile() {
       if (data.fullName) formData.append('fullName', data.fullName);
       if (data.bio) formData.append('bio', data.bio);
       if (data.profileImage) formData.append('profileImage', data.profileImage);
+      if (data.website !== undefined) formData.append('website', data.website);
 
       return usersApi.updateProfile(formData);
     },

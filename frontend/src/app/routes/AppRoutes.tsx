@@ -5,8 +5,6 @@ import Messages from '@pages/Messages/Messages';
 import MyProfile from '@pages/Profile/MyProfile/MyProfile';
 import UserProfile from '@pages/Profile/UserProfile/UserProfile';
 import EditProfile from '@pages/Profile/EditProfile/EditProfile';
-import AddPost from '@pages/Post/AddPost/AddPost';
-import EditPost from '@pages/Post/EditPost/EditPost';
 import Login from '@pages/Auth/Login/Login';
 import SignUp from '@pages/Auth/SignUp/SignUp';
 import Reset from '@pages/Auth/Reset/Reset';
@@ -34,10 +32,6 @@ export default function AppRoutes() {
         <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/profile/:id" element={<UserProfile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
-
-        {/* Posts */}
-        <Route path="/post/new" element={<AddPost />} />
-        <Route path="/post/:id/edit" element={<EditPost />} />
       </Route>
 
       {/* 404 */}

@@ -54,7 +54,7 @@ function timeAgo(date: string): string {
   for (const [name, secondsInInterval] of Object.entries(intervals)) {
     const interval = Math.floor(seconds / secondsInInterval);
     if (interval >= 1) {
-      return `${interval} ${name}${interval > 1 ? 's' : ''} ago`;
+      return `${interval} ${name}${interval > 1 ? 's' : ''}`;
     }
   }
 
@@ -403,7 +403,7 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
                 className={styles.postBtn}
                 disabled={!comment.trim() || addComment.isPending}
               >
-                Post
+                Send
               </button>
               
               {/* Emoji picker */}

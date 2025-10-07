@@ -1,5 +1,6 @@
 import client from './client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import useAuth from '@app/providers/useAuth';
 
 // Types for notifications
 export interface Notification {
@@ -50,9 +51,12 @@ export const notificationsApi = {
 
 // React Query hooks
 export function useNotifications() {
+  const { user } = useAuth();
+  
   return useQuery({
     queryKey: notificationKeys.list(),
     queryFn: notificationsApi.getNotifications,
+    enabled: !!user, // Only fetch when user is logged in
   });
 }
 

@@ -49,6 +49,8 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         await AuthAPI.logout();
       } finally {
         setUser(null);
+        // Cancel all ongoing queries before clearing
+        queryClient.cancelQueries();
         queryClient.clear();
       }
     },

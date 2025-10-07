@@ -16,7 +16,7 @@ export default function Messages() {
             element={
               <div className={styles.emptyChatState}>
                 <h2>Your messages</h2>
-                <p>Send private photos and messages to a friend or group.</p>
+                <p>Send private messages to a friend.</p>
               </div>
             }
           />

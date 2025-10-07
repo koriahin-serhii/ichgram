@@ -88,7 +88,12 @@ export function useCreatePost() {
   return useMutation<unknown, Error, CreatePostVars>({
     mutationFn: ({ image, description }) => createPost(image, description),
     onSuccess: () => {
+      // Invalidating feed
       qc.invalidateQueries({ queryKey: postKeys.feed() });
+      // Invalidating user posts (to update profile)
+      qc.invalidateQueries({ queryKey: [...postKeys.all, 'user'] });
+      // Invalidating user profiles (to update stats.postsCount)
+      qc.invalidateQueries({ queryKey: userKeys.all });
     },
   });
 }
@@ -98,14 +103,14 @@ export function useDeletePost() {
   return useMutation<unknown, Error, ID>({
     mutationFn: (id: ID) => deletePost(id),
     onSuccess: (_, deletedPostId) => {
-      // Удаляем данные удалённого поста из кэша
+      // Deleting post from cache
       qc.removeQueries({ queryKey: postKeys.detail(deletedPostId) });
       
-      // Инвалидируем feed и посты пользователей
+      // Invalidating feed and user posts
       qc.invalidateQueries({ queryKey: postKeys.feed() });
       qc.invalidateQueries({ queryKey: [...postKeys.all, 'user'] });
-      
-      // Инвалидируем профили пользователей (для обновления stats.postsCount)
+
+      // Invalidating user profiles (to update stats.postsCount)
       qc.invalidateQueries({ queryKey: userKeys.all });
     },
   });
@@ -126,8 +131,12 @@ export function useUpdatePost() {
     mutationFn: ({ id, description, image }) =>
       updatePost(id, description, image),
     onSuccess: (_, { id }) => {
+      // Invalidating feed, post details, and user posts
       qc.invalidateQueries({ queryKey: postKeys.feed() });
       qc.invalidateQueries({ queryKey: postKeys.detail(id) });
+      qc.invalidateQueries({ queryKey: [...postKeys.all, 'user'] });
+      // Invalidating user profiles (to update stats.postsCount)
+      qc.invalidateQueries({ queryKey: userKeys.all });
     },
   });
 }

@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { ChangeEvent } from 'react';
-import { useCreatePost } from '@shared/api/posts';
+import { useCreatePost, useUpdatePost } from '@shared/api/posts';
 import useAuth from '@app/providers/useAuth';
 import UploadPhotoIcon from '@assets/icons/upload-photo.svg?react';
 import styles from './CreatePostModal.module.css';
@@ -8,6 +8,12 @@ import styles from './CreatePostModal.module.css';
 interface CreatePostModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
+  editMode?: {
+    postId: string;
+    currentDescription: string;
+    currentImageUrl: string;
+  };
 }
 
 const MAX_DESCRIPTION_LENGTH = 2200;
@@ -38,6 +44,8 @@ const EMOJI_LIST = [
 export default function CreatePostModal({
   isOpen,
   onClose,
+  onSuccess,
+  editMode,
 }: CreatePostModalProps) {
   const { user } = useAuth();
   const [description, setDescription] = useState('');
@@ -47,6 +55,15 @@ export default function CreatePostModal({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const createPost = useCreatePost();
+  const updatePost = useUpdatePost();
+
+  // Загрузка данных для редактирования
+  useEffect(() => {
+    if (editMode && isOpen) {
+      setDescription(editMode.currentDescription);
+      setPreviewUrl(editMode.currentImageUrl);
+    }
+  }, [editMode, isOpen]);
 
   const handleImageSelect = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -70,20 +87,40 @@ export default function CreatePostModal({
   };
 
   const handleShare = async () => {
-    if (!selectedImage || !description.trim()) {
-      alert('Please select an image and add description');
+    if (!description.trim()) {
+      alert('Please add description');
+      return;
+    }
+
+    // В режиме редактирования изображение опционально
+    if (!editMode && !selectedImage) {
+      alert('Please select an image');
       return;
     }
 
     try {
-      await createPost.mutateAsync({
-        image: selectedImage,
-        description: description.trim(),
-      });
+      if (editMode) {
+        // Редактирование поста
+        await updatePost.mutateAsync({
+          id: editMode.postId,
+          description: description.trim(),
+          image: selectedImage || undefined,
+        });
+      } else {
+        // Создание нового поста
+        await createPost.mutateAsync({
+          image: selectedImage!,
+          description: description.trim(),
+        });
+      }
       handleClose();
+      // Вызываем onSuccess если передан (для редактирования)
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
-      console.error('Failed to create post:', error);
-      alert('Failed to create post');
+      console.error('Failed to save post:', error);
+      alert('Failed to save post');
     }
   };
 
@@ -100,21 +137,40 @@ export default function CreatePostModal({
 
   if (!isOpen) return null;
 
+  const isLoading = createPost.isPending || updatePost.isPending;
+  const isDisabled = editMode 
+    ? !description.trim() || isLoading
+    : (!selectedImage || !description.trim() || isLoading);
+
   return (
     <>
       <div className={styles.overlay} onClick={handleClose} />
       <div className={styles.modal}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Create new post</h2>
-          <button
-            onClick={handleShare}
-            className={styles.shareBtn}
-            disabled={
-              !selectedImage || !description.trim() || createPost.isPending
-            }
-          >
-            {createPost.isPending ? 'Sharing...' : 'Share'}
-          </button>
+          <h2 className={styles.title}>
+            {editMode ? 'Edit post' : 'Create new post'}
+          </h2>
+          <div className={styles.headerButtons}>
+            {editMode && (
+              <button
+                onClick={handleClose}
+                className={styles.cancelBtn}
+                type="button"
+              >
+                Cancel
+              </button>
+            )}
+            <button
+              onClick={handleShare}
+              className={styles.shareBtn}
+              disabled={isDisabled}
+            >
+              {isLoading 
+                ? (editMode ? 'Saving...' : 'Sharing...') 
+                : (editMode ? 'Save' : 'Share')
+              }
+            </button>
+          </div>
         </div>
 
         <div className={styles.content}>

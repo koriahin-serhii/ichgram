@@ -29,7 +29,7 @@ function timeAgo(date: string): string {
   for (const [name, secondsInInterval] of Object.entries(intervals)) {
     const interval = Math.floor(seconds / secondsInInterval);
     if (interval >= 1) {
-      return `${interval} ${name}${interval > 1 ? 's' : ''} ago`;
+      return `${interval} ${name}${interval > 1 ? 's' : ''}`;
     }
   }
 

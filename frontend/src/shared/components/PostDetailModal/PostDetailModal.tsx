@@ -9,6 +9,7 @@ import {
   useUnfollowUser,
 } from '@shared/api/follow';
 import useAuth from '@app/providers/useAuth';
+import CreatePostModal from '../CreatePostModal/CreatePostModal';
 import MoreIcon from '@assets/icons/more.svg?react';
 import CommentIcon from '@assets/icons/comment.svg?react';
 import styles from './PostDetailModal.module.css';
@@ -77,6 +78,12 @@ export default function PostDetailModal({
   const [comment, setComment] = useState('');
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editPostData, setEditPostData] = useState<{
+    postId: string;
+    description: string;
+    imageUrl: string;
+  } | null>(null);
 
   const {
     data: post,
@@ -147,8 +154,18 @@ export default function PostDetailModal({
   };
 
   const handleEdit = () => {
-    onClose();
-    navigate(`/post/${postId}/edit`);
+    if (!post) return;
+    
+    // Сохраняем данные поста
+    setEditPostData({
+      postId: post._id,
+      description: post.description || '',
+      imageUrl: post.imageUrl,
+    });
+    
+    setShowOptionsModal(false);
+    setShowEditModal(true);
+    // НЕ вызываем onClose(), чтобы компонент не размонтировался
   };
 
   const handleCopyLink = () => {
@@ -164,7 +181,35 @@ export default function PostDetailModal({
     }
   };
 
-  if (!isOpen) return null;
+  // Рендерим EditModal независимо от состояния isOpen
+  const editModal = editPostData && (
+    <CreatePostModal
+      isOpen={showEditModal}
+      onClose={() => {
+        setShowEditModal(false);
+        setEditPostData(null);
+        // Не закрываем основную модалку, она уже открыта
+      }}
+      onSuccess={() => {
+        setShowEditModal(false);
+        setEditPostData(null);
+        onClose(); // Закрываем основную модалку
+        navigate('/my-profile');
+      }}
+      editMode={{
+        postId: editPostData.postId,
+        currentDescription: editPostData.description,
+        currentImageUrl: editPostData.imageUrl,
+      }}
+    />
+  );
+
+  if (!isOpen) return editModal;
+
+  // Скрываем основную модалку если открыт EditModal
+  if (showEditModal) {
+    return editModal;
+  }
 
   if (postLoading) {
     return (
@@ -173,6 +218,7 @@ export default function PostDetailModal({
         <div className={styles.container} onClick={handleOverlayClick}>
           <div className={styles.loading}>Loading post...</div>
         </div>
+        {editModal}
       </>
     );
   }
@@ -184,6 +230,7 @@ export default function PostDetailModal({
         <div className={styles.container} onClick={handleOverlayClick}>
           <div className={styles.error}>Post not found</div>
         </div>
+        {editModal}
       </>
     );
   }
@@ -471,6 +518,7 @@ export default function PostDetailModal({
           </div>
         </>
       )}
+      {editModal}
     </>
   );
 }

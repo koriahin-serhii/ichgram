@@ -40,6 +40,26 @@
   text-align: center;
 }
 
+.headerButtons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cancelBtn {
+  background: none;
+  border: none;
+  color: #262626;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  padding: 0;
+}
+
+.cancelBtn:hover {
+  opacity: 0.7;
+}
+
 .shareBtn {
   background: none;
   border: none;

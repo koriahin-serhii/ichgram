@@ -1,24 +1,19 @@
 .screen {
-  min-height: 100dvh;
-  display: grid;
-  place-items: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
   gap: 16px;
+  margin-top: 80px;
 }
-.form {
-  display: grid;
-  gap: 12px;
+
+.imageContainer {
+  transform: translateY(-20px);
 }
-.error {
-  color: #ef4444;
-  font-size: 13px;
-}
-.actions {
-  display: grid;
-  gap: 8px;
-}
-.bottomLink {
-  color: var(--muted);
-}
-.bottomLink a {
-  color: var(--primary);
+
+@media (max-width: 900px) {
+  .imageContainer {
+    display: none;
+  }
 }

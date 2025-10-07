@@ -33,6 +33,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
   };
 
   return (
+    <div className={styles.container}>
     <div className={styles.card}>
       <div className={styles.logoWrap}>
         <Logo className={styles.logo} />
@@ -60,6 +61,10 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
           Forgot password?
         </Link>
       </form>
+    </div>
+    <div className={styles.bottomLink}>
+        Don’t have an account? <Link to="/signup">Sign up</Link>
+      </div>
     </div>
   );
 }

@@ -1,9 +1,16 @@
-.card {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 16px;
+.container {
+  border-radius: 1px;
   width: 100%;
   max-width: 350px;
+  display: grid;
+  gap: 10px;
+}
+
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 1px;
+  padding: 16px 40px;
+  width: 100%;
   background: #fff;
   display: grid;
   gap: 12px;
@@ -12,10 +19,30 @@
   display: flex;
   justify-content: center;
 }
-.logo { height: 28px; }
+.logo {
+  height: 108px;
+}
 .form {
   display: grid;
-  gap: 10px;
+  gap: 6px;
+}
+.form input {
+  width: 100%;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  background: #fafafa;
+  font-size: 12px;
+}
+.form button {
+  margin: 8px 0px;
+  padding: 8px 0;
+  background: #0095f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
 }
 .error {
   color: #ef4444;
@@ -25,7 +52,8 @@
   display: flex;
   align-items: center;
   color: #6b7280;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 600;
   gap: 8px;
 }
 .separator::before,
@@ -35,4 +63,26 @@
   height: 1px;
   background: #e5e7eb;
 }
-.forgot { text-align: center; color: var(--primary); font-size: 12px; }
+.forgot {
+  text-align: center;
+  color: #00376b;
+  font-size: 12px;
+  margin-top: 70px;
+}
+.bottomLink {
+  border: 1px solid #e5e7eb;
+  padding: 16px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 400;
+}
+.bottomLink a {
+  color: #0095f6;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 4px;
+}

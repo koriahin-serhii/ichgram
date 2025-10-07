@@ -1,20 +1,22 @@
 import styles from './login.module.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LoginForm from '@components/Auth/LoginForm/LoginForm';
+import loginImage from '@assets/images/login.png';
 
 export default function Login() {
   const navigate = useNavigate();
 
   return (
     <div className={styles.screen}>
+      <div className={styles.imageContainer}>
+        <img
+          src={loginImage}
+          alt="Phone with Instagram app"
+          className={styles.phoneImage}
+        />
+      </div>
+
       <LoginForm onSuccess={() => navigate('/')} />
-      <div style={{ height: 8 }} />
-      <div style={{ textAlign: 'center' }}>
-        <Link to="/reset" style={{ color: 'var(--primary)' }}>Forgot password?</Link>
-      </div>
-      <div className={styles.bottomLink}>
-        Don’t have an account? <Link to="/signup">Sign up</Link>
-      </div>
     </div>
   );
 }

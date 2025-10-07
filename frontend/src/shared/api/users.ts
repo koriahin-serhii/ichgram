@@ -139,6 +139,7 @@ interface UpdateProfileData {
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
+  const { refreshUser } = useAuth();
 
   return useMutation<User, Error, UpdateProfileData>({
     mutationFn: async (data: UpdateProfileData) => {
@@ -150,9 +151,11 @@ export function useUpdateProfile() {
 
       return usersApi.updateProfile(formData);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: userKeys.me() });
       queryClient.invalidateQueries({ queryKey: userKeys.all });
+      // Обновляем данные пользователя в AuthContext для Sidebar и других компонентов
+      await refreshUser();
     },
   });
 }

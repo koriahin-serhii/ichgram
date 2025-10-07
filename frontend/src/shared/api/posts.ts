@@ -1,6 +1,7 @@
 import api from './client';
 import type { ID } from './types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { userKeys } from './users';
 
 // Types
 export interface Post {
@@ -96,8 +97,16 @@ export function useDeletePost() {
   const qc = useQueryClient();
   return useMutation<unknown, Error, ID>({
     mutationFn: (id: ID) => deletePost(id),
-    onSuccess: () => {
+    onSuccess: (_, deletedPostId) => {
+      // Удаляем данные удалённого поста из кэша
+      qc.removeQueries({ queryKey: postKeys.detail(deletedPostId) });
+      
+      // Инвалидируем feed и посты пользователей
       qc.invalidateQueries({ queryKey: postKeys.feed() });
+      qc.invalidateQueries({ queryKey: [...postKeys.all, 'user'] });
+      
+      // Инвалидируем профили пользователей (для обновления stats.postsCount)
+      qc.invalidateQueries({ queryKey: userKeys.all });
     },
   });
 }

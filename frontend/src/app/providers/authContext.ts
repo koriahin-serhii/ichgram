@@ -16,6 +16,7 @@ export type AuthContextValue = {
   register: (name: string, email: string, password: string, fullName: string) => Promise<void>;
   logout: () => Promise<void>;
   setUser: (u: AuthUser | null) => void;
+  refreshUser: () => Promise<void>;
 };
 
 export const AuthContext = createContext<AuthContextValue | undefined>(undefined);

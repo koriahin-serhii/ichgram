@@ -67,7 +67,11 @@ interface PostDetailModalProps {
   onClose: () => void;
 }
 
-export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailModalProps) {
+export default function PostDetailModal({
+  postId,
+  isOpen,
+  onClose,
+}: PostDetailModalProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [comment, setComment] = useState('');
@@ -79,9 +83,8 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
     isLoading: postLoading,
     error: postError,
   } = usePost(postId);
-  const { data: comments = [], isLoading: commentsLoading } = useComments(
-    postId
-  );
+  const { data: comments = [], isLoading: commentsLoading } =
+    useComments(postId);
   const { data: likesData } = useLikes(postId);
   const { data: isFollowing = false } = useIsFollowing(post?.author?._id || '');
 
@@ -92,9 +95,12 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
   const deletePost = useDeletePost();
 
   const isOwnPost = user?.id === post?.author?._id;
-  
+
   // Check if current user has liked this post
-  const liked = likesData?.likes?.some((like: { user: string }) => like.user === user?.id) || false;
+  const liked =
+    likesData?.likes?.some(
+      (like: { user: string }) => like.user === user?.id
+    ) || false;
   const likesCount = likesData?.count || 0;
 
   const handleLike = () => {
@@ -135,7 +141,7 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
     deletePost.mutate(postId, {
       onSuccess: () => {
         onClose();
-        navigate('/');
+        navigate('/my-profile');
       },
     });
   };
@@ -146,7 +152,7 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
   };
 
   const handleCopyLink = () => {
-    const url = `${window.location.origin}/post/${postId}`;
+    const url = `${window.location.origin}/my-profile`;
     navigator.clipboard.writeText(url);
     setShowOptionsModal(false);
   };
@@ -363,14 +369,14 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
 
             {/* Likes count */}
             {likesCount > 0 && (
-              <div className={styles.likes}>{likesCount} {likesCount === 1 ? 'like' : 'likes'}</div>
+              <div className={styles.likes}>
+                {likesCount} {likesCount === 1 ? 'like' : 'likes'}
+              </div>
             )}
 
             {/* Time */}
             {post.createdAt && (
-              <div className={styles.time}>
-                {timeAgo(post.createdAt).toUpperCase()}
-              </div>
+              <div className={styles.time}>{timeAgo(post.createdAt)}</div>
             )}
 
             {/* Add comment form */}
@@ -405,7 +411,7 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
               >
                 Send
               </button>
-              
+
               {/* Emoji picker */}
               {showEmojiPicker && (
                 <div className={styles.emojiPicker}>
@@ -434,7 +440,7 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
             onClick={() => setShowOptionsModal(false)}
           />
           <div className={styles.optionsModal}>
-            {isOwnPost ? (
+            {isOwnPost && (
               <>
                 <button
                   className={`${styles.optionBtn} ${styles.deleteBtn}`}
@@ -445,18 +451,12 @@ export default function PostDetailModal({ postId, isOpen, onClose }: PostDetailM
                 <button className={styles.optionBtn} onClick={handleEdit}>
                   Edit
                 </button>
-                <button className={styles.optionBtn} onClick={handleCopyLink}>
-                  Copy link
-                </button>
                 <button
-                  className={styles.optionBtnCancel}
+                  className={styles.optionBtn}
                   onClick={() => setShowOptionsModal(false)}
                 >
-                  Cancel
+                  Go to post
                 </button>
-              </>
-            ) : (
-              <>
                 <button className={styles.optionBtn} onClick={handleCopyLink}>
                   Copy link
                 </button>

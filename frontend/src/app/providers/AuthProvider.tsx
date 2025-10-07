@@ -71,6 +71,15 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         queryClient.clear();
       }
     },
+    async refreshUser() {
+      try {
+        const res = await AuthAPI.getCurrentUser();
+        setUser(res.user ?? null);
+      } catch {
+        // If refresh fails, user might be logged out
+        setUser(null);
+      }
+    },
     setUser,
   }), [user, loading, error, queryClient]);
 

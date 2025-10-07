@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
 import PostModel from '../models/postModel.js';
+import LikeModel from '../models/likeModel.js';
+import CommentModel from '../models/commentModel.js';
+import NotificationModel from '../models/notificationModel.js';
 import { Types } from 'mongoose';
 
 import { uploadPostImageToS3, deletePostImageFromS3 } from '../utils/s3.js';
@@ -228,6 +231,9 @@ export const deletePost = async (req: AuthenticatedRequest, res: Response) => {
     if (post.author.toString() !== String(userId)) {
       return res.status(403).json({ message: 'Not authorized' });
     }
+    
+    const postId = post._id;
+    
     // Delete image from S3
     if (post.imageUrl) {
       try {
@@ -236,7 +242,19 @@ export const deletePost = async (req: AuthenticatedRequest, res: Response) => {
         console.warn('Failed to delete image from S3:', err);
       }
     }
-    await post.deleteOne();
+    
+    // Delete all related data
+    await Promise.all([
+      // Delete the post itself
+      post.deleteOne(),
+      // Delete all likes for this post
+      LikeModel.deleteMany({ post: postId }),
+      // Delete all comments for this post
+      CommentModel.deleteMany({ post: postId }),
+      // Delete all notifications related to this post
+      NotificationModel.deleteMany({ post: postId }),
+    ]);
+    
     res.json({ message: 'Post deleted' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });

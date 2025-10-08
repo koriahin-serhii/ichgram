@@ -19,25 +19,25 @@ export const api = axios.create({
 // });
 
 // Simple error handling and logging
-// api.interceptors.response.use(
-//   (res) => {
-//     console.log('API Response:', {
-//       url: res.config.url,
-//       status: res.status,
-//       data: res.data,
-//     });
-//     return res;
-//   },
-//   (err) => {
-//     console.log('API Error:', {
-//       url: err.config?.url,
-//       status: err.response?.status,
-//       message: err.response?.data?.message || err.message,
-//     });
-//     const message =
-//       err?.response?.data?.message || err.message || 'Request error';
-//     return Promise.reject(new Error(message));
-//   }
-// );
+api.interceptors.response.use(
+  (res) => {
+    // console.log('API Response:', {
+    //   url: res.config.url,
+    //   status: res.status,
+    //   data: res.data,
+    // });
+    return res;
+  },
+  (err) => {
+    console.log('API Error:', {
+      url: err.config?.url,
+      status: err.response?.status,
+      message: err.response?.data?.message || err.message,
+    });
+    const message =
+      err?.response?.data?.message || err.message || 'Request error';
+    return Promise.reject(new Error(message));
+  }
+);
 
 export default api;

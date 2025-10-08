@@ -14,21 +14,35 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const { login, loading } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login } = useAuth();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    if (!email || !password) {
+    
+    // Validation
+    if (!email.trim() || !password.trim()) {
       setError('Please enter email and password');
       return;
     }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
     try {
       await login(email, password);
       onSuccess?.();
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : 'Login failed';
       setError(msg);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -51,7 +65,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
             onChange={(e) => setPassword(e.target.value)}
           />
           {error && <div className={styles.error}>{error}</div>}
-          <Button type="submit" block disabled={loading}>
+          <Button type="submit" block disabled={isSubmitting}>
             Log in
           </Button>
           <div className={styles.separator}>

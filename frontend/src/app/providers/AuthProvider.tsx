@@ -7,20 +7,20 @@ import { AuthContext, type AuthUser, type AuthContextValue } from './authContext
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true); // Start with true to check auth on mount
+  const [loading, setLoading] = useState(true);
+  const [initialCheckDone, setInitialCheckDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Check authentication on mount
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const res = await AuthAPI.getCurrentUser();
         setUser(res.user ?? null);
       } catch {
-        // User not authenticated or token expired
         setUser(null);
       } finally {
         setLoading(false);
+        setInitialCheckDone(true);
       }
     };
     
@@ -30,12 +30,14 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AuthContextValue>(() => ({
     user,
     loading,
+    initialCheckDone,
     error,
     async login(email: string, password: string) {
-      setLoading(true); setError(null);
+      setLoading(true);
+      setError(null);
       try {
         const res = await AuthAPI.login({ email, password });
-        setUser(res.user ?? null); // token stored in cookie by backend
+        setUser(res.user ?? null);
         await queryClient.invalidateQueries({ predicate: () => true });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : 'Login failed';
@@ -46,10 +48,10 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       }
     },
     async register(name: string, email: string, password: string, fullName: string) {
-      setLoading(true); setError(null);
+      setLoading(true);
+      setError(null);
       try {
         await AuthAPI.register({ name, email, password, fullName });
-        // Auto-login right after successful registration
         const res = await AuthAPI.login({ email, password });
         setUser(res.user ?? null);
         await queryClient.invalidateQueries({ predicate: () => true });
@@ -66,7 +68,6 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         await AuthAPI.logout();
       } finally {
         setUser(null);
-        // Cancel all ongoing queries before clearing
         queryClient.cancelQueries();
         queryClient.clear();
       }
@@ -76,15 +77,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         const res = await AuthAPI.getCurrentUser();
         setUser(res.user ?? null);
       } catch {
-        // If refresh fails, user might be logged out
         setUser(null);
       }
     },
     setUser,
-  }), [user, loading, error, queryClient]);
+  }), [user, loading, initialCheckDone, error, queryClient]);
 
-  // Show loading indicator while checking auth
-  if (loading) {
+  if (!initialCheckDone) {
     return (
       <div style={{ 
         display: 'flex', 

@@ -11,13 +11,19 @@ const jwtKey: string = process.env.JWT_SECRET as string;
 export const register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, fullName } = req.body;
-    // Check if user already exists by email or username
-    const existingUser = await User.findOne({ $or: [{ email }, { name }] });
-    if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: 'User with this email or username already exists' });
+    
+    // Check if email exists
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
+      return res.status(400).json({ message: 'User with this email already exists' });
     }
+    
+    // Check if username exists
+    const usernameExists = await User.findOne({ name });
+    if (usernameExists) {
+      return res.status(400).json({ message: 'User with this username already exists' });
+    }
+    
     // Create user (password will be hashed in pre-save hook)
     const user = new User({ name, email, password, fullName });
     await user.save();

@@ -10,40 +10,89 @@ export type SignUpFormProps = {
   onSuccess?: () => void;
 };
 
+type ValidationError = {
+  field: string;
+  message: string;
+};
+
 export default function SignUpForm({ onSuccess }: SignUpFormProps) {
   const [name, setName] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<string[]>([]);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const { register, loading } = useAuth();
+  const [errors, setErrors] = useState<ValidationError[]>([]);
+  const [submitError, setSubmitError] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { register } = useAuth();
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const validateForm = (): boolean => {
+    const newErrors: ValidationError[] = [];
+    
+    // Email validation
+    if (!email.trim()) {
+      newErrors.push({ field: 'email', message: 'Email is required' });
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        newErrors.push({ field: 'email', message: 'Please enter a valid email' });
+      }
+    }
+    
+    // Full name validation
+    if (!fullName.trim()) {
+      newErrors.push({ field: 'fullName', message: 'Full name is required' });
+    }
+    
+    // Username validation
+    if (!name.trim()) {
+      newErrors.push({ field: 'name', message: 'Username is required' });
+    } else if (name.length < 3) {
+      newErrors.push({ field: 'name', message: 'Username must be at least 3 characters' });
+    } else if (!/^[a-zA-Z0-9._]+$/.test(name)) {
+      newErrors.push({ field: 'name', message: 'Username can only contain letters, numbers, dots and underscores' });
+    }
+    
+    // Password validation
+    if (!password.trim()) {
+      newErrors.push({ field: 'password', message: 'Password is required' });
+    } else if (password.length < 6) {
+      newErrors.push({ field: 'password', message: 'Password must be at least 6 characters' });
+    }
+    
+    setErrors(newErrors);
+    return newErrors.length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const next: string[] = [];
-    if (!email) next.push('Email is required');
-    if (!fullName) next.push('Full name is required');
-    if (!name) next.push('Username is required');
-    if (!password) next.push('Password is required');
-    if (password && password.length < 6)
-      next.push('Password must be at least 6 characters');
-    setErrors(next);
-    if (next.length) return;
-    setSubmitError(null);
+    if (!validateForm()) return;
+    
+    setIsSubmitting(true);
+    
     try {
       await register(name, email, password, fullName);
       onSuccess?.();
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : 'Registration failed';
-      setSubmitError(msg);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Registration failed';
+      
+      setSubmitError('');
+      setErrors([]);
+      
+      // Handle specific error cases from backend
+      if (errorMessage.toLowerCase().includes('this email')) {
+        setErrors([{ field: 'email', message: 'This email is already registered' }]);
+      } else if (errorMessage.toLowerCase().includes('this username')) {
+        setErrors([{ field: 'name', message: 'This username is already taken' }]);
+      } else {
+        setSubmitError(errorMessage);
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const usernameTaken =
-    submitError?.toLowerCase().includes('username') ||
-    submitError?.toLowerCase().includes('email or username') ||
-    false;
+  const getFieldError = (field: string) => 
+    errors.find(err => err.field === field)?.message;
 
   return (
     <div className={styles.container}>
@@ -54,47 +103,51 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
         <div className={styles.subtitle}>
           Sign up to see photos and videos from your friends.
         </div>
-        <form className={styles.form} onSubmit={onSubmit}>
-          <TextField
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <TextField
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-          />
+        <form className={styles.form} onSubmit={handleSubmit}>
+          <div>
+            <TextField
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {getFieldError('email') && (
+              <div className={styles.fieldError}>{getFieldError('email')}</div>
+            )}
+          </div>
+          <div>
+            <TextField
+              placeholder="Full Name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+            {getFieldError('fullName') && (
+              <div className={styles.fieldError}>{getFieldError('fullName')}</div>
+            )}
+          </div>
           <div>
             <TextField
               placeholder="Username"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
-            {(errors.includes('Username is required') || usernameTaken) && (
-              <div className={styles.fieldError}>
-                {usernameTaken
-                  ? 'This username is already taken.'
-                  : 'This username is required.'}
-              </div>
+            {getFieldError('name') && (
+              <div className={styles.fieldError}>{getFieldError('name')}</div>
             )}
           </div>
-          <TextField
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {!!errors.length && !errors.includes('Username is required') && (
-            <ul className={styles.errors}>
-              {errors.map((er, i) => (
-                <li key={i}>{er}</li>
-              ))}
-            </ul>
-          )}
-          {!usernameTaken && submitError && (
-            <div className={styles.errors}>{submitError}</div>
+          <div>
+            <TextField
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {getFieldError('password') && (
+              <div className={styles.fieldError}>{getFieldError('password')}</div>
+            )}
+          </div>
+          {submitError && (
+            <div className={styles.submitError}>{submitError}</div>
           )}
           <p className={styles.terms}>
             <p>People who use our service may have uploaded your contact
@@ -105,7 +158,7 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
             and <b>Cookies Policy</b>.
             </p>
           </p>
-          <Button type="submit" block disabled={loading}>
+          <Button type="submit" block disabled={isSubmitting}>
             Sign up
           </Button>
         </form>
@@ -116,3 +169,4 @@ export default function SignUpForm({ onSuccess }: SignUpFormProps) {
     </div>
   );
 }
+

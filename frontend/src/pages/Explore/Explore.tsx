@@ -7,21 +7,24 @@ import styles from './Explore.module.css';
 
 export default function Explore() {
   const { user } = useAuth();
-  const { data: posts = [], isLoading, error } = useFeed();
+  const { data, isLoading, error } = useFeed();
   const { openPostDetail } = usePostDetail();
 
   // Filter out current user's posts and shuffle the rest
   const explorePosts = useMemo(() => {
-    if (!posts.length) return [];
+    // Flatten all pages into single array
+    const allPosts = data?.pages.flatMap(page => page.posts) || [];
+    
+    if (!allPosts.length) return [];
 
     // Filter out current user's posts
     const filteredPosts = user
-      ? posts.filter((post: Post) => post.author?._id !== user.id)
-      : posts;
+      ? allPosts.filter((post: Post) => post.author?._id !== user.id)
+      : allPosts;
 
     // Shuffle posts for variety
     return [...filteredPosts].sort(() => Math.random() - 0.5);
-  }, [posts, user]);
+  }, [data, user]);
 
   if (error) {
     return (

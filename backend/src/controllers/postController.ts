@@ -72,8 +72,13 @@ export const getUserPosts = async (req: Request, res: Response) => {
 };
 
 // Get all posts (feed)
-export const getAllPosts = async (_req: Request, res: Response) => {
+export const getAllPosts = async (req: Request, res: Response) => {
   try {
+    // Pagination parameters
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
     const posts = await PostModel.aggregate([
       {
         $lookup: {
@@ -121,8 +126,25 @@ export const getAllPosts = async (_req: Request, res: Response) => {
         },
       },
       { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
     ]);
-    res.json(posts);
+
+    // Get total count for pagination metadata
+    const totalPosts = await PostModel.countDocuments();
+    const totalPages = Math.ceil(totalPosts / limit);
+    const hasMore = page < totalPages;
+
+    res.json({
+      posts,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        totalPosts,
+        hasMore,
+        limit,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
   }

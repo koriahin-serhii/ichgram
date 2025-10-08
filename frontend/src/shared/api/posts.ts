@@ -1,6 +1,6 @@
 import api from './client';
 import type { ID } from './types';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { userKeys } from './users';
 
 // Types
@@ -19,6 +19,19 @@ export interface Post {
   updatedAt?: string;
 }
 
+export interface PaginationMeta {
+  currentPage: number;
+  totalPages: number;
+  totalPosts: number;
+  hasMore: boolean;
+  limit: number;
+}
+
+export interface FeedResponse {
+  posts: Post[];
+  pagination: PaginationMeta;
+}
+
 export const postKeys = {
   all: ['posts'] as const,
   feed: () => [...postKeys.all, 'feed'] as const,
@@ -31,8 +44,10 @@ export async function getUserPosts(userId: ID) {
   return res.data;
 }
 
-export async function getFeed() {
-  const res = await api.get('/api/posts/');
+export async function getFeed(page = 1, limit = 10): Promise<FeedResponse> {
+  const res = await api.get('/api/posts/', {
+    params: { page, limit },
+  });
   return res.data;
 }
 
@@ -68,9 +83,15 @@ export async function updatePost(id: ID, description?: string, image?: File) {
 
 // React Query hooks
 export function useFeed() {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: postKeys.feed(),
-    queryFn: getFeed,
+    queryFn: ({ pageParam = 1 }) => getFeed(pageParam, 10),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      return lastPage.pagination.hasMore 
+        ? lastPage.pagination.currentPage + 1 
+        : undefined;
+    },
   });
 }
 

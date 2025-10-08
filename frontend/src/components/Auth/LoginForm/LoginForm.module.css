@@ -1,5 +1,4 @@
 .container {
-  border-radius: 1px;
   width: 100%;
   max-width: 350px;
   display: grid;
@@ -11,7 +10,6 @@
   border-radius: 1px;
   padding: 16px 40px;
   width: 100%;
-  background: #fff;
   display: grid;
   gap: 12px;
 }
@@ -70,7 +68,7 @@
   margin-top: 70px;
 }
 .bottomLink {
-  border: 1px solid #e5e7eb;
+  border: 1px solid #dbdbdb;
   padding: 16px 0px;
   display: flex;
   justify-content: center;

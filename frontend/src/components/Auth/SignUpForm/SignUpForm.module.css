@@ -1,28 +1,53 @@
-.card {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 16px;
+.container {
   width: 100%;
   max-width: 350px;
-  background: #fff;
   display: grid;
-  gap: 12px;
+  gap: 15px;
+}
+
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 1px;
+  padding: 16px 40px;
+  width: 100%;
+  display: grid;
+  /* gap: 0px; */
 }
 .logoWrap {
   display: flex;
   justify-content: center;
 }
 .logo {
-  height: 28px;
+  height: 108px;
 }
 .subtitle {
   text-align: center;
-  color: #6b7280;
-  font-size: 14px;
+  color: #737373;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 36px;
 }
 .form {
   display: grid;
-  gap: 10px;
+  gap: 6px;
+}
+.form input {
+  width: 100%;
+  border: 1px solid #dbdbdb;
+  border-radius: 3px;
+  background: #fafafa;
+  font-size: 12px;
+}
+.form button {
+  margin: 8px 0px;
+  padding: 8px 0;
+  background: #0095f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
 }
 .errors {
   color: #ef4444;
@@ -36,7 +61,33 @@
   margin-top: 4px;
 }
 .terms {
-  color: #6b7280;
+  color: #737373;
   font-size: 12px;
   text-align: center;
+}
+.terms p {
+  margin: 10px 0;
+}
+.terms p b {
+  color: #00376B;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.bottomLink {
+  border: 1px solid #dbdbdb;
+  padding: 16px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 400;
+}
+.bottomLink a {
+  color: #0095f6;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-left: 4px;
 }

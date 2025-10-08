@@ -34,35 +34,35 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
 
   return (
     <div className={styles.container}>
-    <div className={styles.card}>
-      <div className={styles.logoWrap}>
-        <Logo className={styles.logo} />
-      </div>
-      <form className={styles.form} onSubmit={onSubmit}>
-        <TextField
-          placeholder="Username, or email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <TextField
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        {error && <div className={styles.error}>{error}</div>}
-        <Button type="submit" block disabled={loading}>
-          Log in
-        </Button>
-        <div className={styles.separator}>
-          <span>OR</span>
+      <div className={styles.card}>
+        <div className={styles.logoWrap}>
+          <Logo className={styles.logo} />
         </div>
-        <Link to="/reset" className={styles.forgot}>
-          Forgot password?
-        </Link>
-      </form>
-    </div>
-    <div className={styles.bottomLink}>
+        <form className={styles.form} onSubmit={onSubmit}>
+          <TextField
+            placeholder="Username, or email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {error && <div className={styles.error}>{error}</div>}
+          <Button type="submit" block disabled={loading}>
+            Log in
+          </Button>
+          <div className={styles.separator}>
+            <span>OR</span>
+          </div>
+          <Link to="/reset" className={styles.forgot}>
+            Forgot password?
+          </Link>
+        </form>
+      </div>
+      <div className={styles.bottomLink}>
         Don’t have an account? <Link to="/signup">Sign up</Link>
       </div>
     </div>

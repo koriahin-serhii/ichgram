@@ -1,15 +1,13 @@
+import { useNavigate } from 'react-router-dom';
 import styles from './reset.module.css';
-import { Link } from 'react-router-dom';
+import ResetForm from '@components/Auth/ResetForm/ResetForm';
 
 export default function Reset() {
- 
+  const navigate = useNavigate();
 
   return (
     <div className={styles.screen}>
-      
-      <div className={styles.bottomLink}>
-        Back to <Link to="/login">Log in</Link>
-      </div>
+      <ResetForm onSuccess={() => navigate('/login')} />
     </div>
   );
 }

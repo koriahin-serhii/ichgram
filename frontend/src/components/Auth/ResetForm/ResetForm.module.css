@@ -1,8 +1,7 @@
 .container {
   width: 100%;
-  max-width: 350px;
+  max-width: 390px;
   display: grid;
-  gap: 10px;
 }
 
 .card {
@@ -11,14 +10,29 @@
   padding: 16px 40px;
   width: 100%;
   display: grid;
-  gap: 12px;
+  gap: 15px;
 }
+
 .logoWrap {
   display: flex;
   justify-content: center;
+  padding: 14px 0;
+  margin-top: 10px;
 }
 .logo {
-  height: 108px;
+  height: 96px;
+}
+.title {
+  text-align: center;
+  color: #000000;
+  font-size: 16px;
+  font-weight: 600;
+}
+.subtitle {
+  text-align: center;
+  color: #737373;
+  font-size: 14px;
+  font-weight: 400;
 }
 .form {
   display: grid;
@@ -57,6 +71,7 @@
   font-size: 13px;
   font-weight: 600;
   gap: 18px;
+  margin-top: 40px;
 }
 .separator::before,
 .separator::after {
@@ -65,26 +80,26 @@
   height: 1px;
   background: #e5e7eb;
 }
-.forgot {
+.createNew {
   text-align: center;
-  color: #00376b;
-  font-size: 12px;
-  margin-top: 70px;
-}
-.bottomLink {
-  border: 1px solid #dbdbdb;
-  padding: 16px 0px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  font-size: 14px;
-  font-weight: 400;
-}
-.bottomLink a {
-  color: #0095f6;
+  color: #262626;
   font-size: 14px;
   font-weight: 600;
+  margin-top: 10px;
+  margin-bottom: 70px;
+}
+.backToLogin {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  border: 1px solid #dbdbdb;
+  border-top: none;
+  background-color: #fafafa;
+  height: 44px;
+}
+.backToLogin a {
+  font-weight: 600;
+  font-size: 14px;
   text-decoration: none;
-  margin-left: 4px;
+  color: #262626;
 }

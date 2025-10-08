@@ -30,9 +30,6 @@ export default function UserSearchResult({ user, onClick }: UserSearchResultProp
       <div className={styles.info}>
         <div className={styles.username}>{user.name}</div>
         <div className={styles.fullName}>{user.fullName}</div>
-        {user.bio && (
-          <div className={styles.bio}>{user.bio}</div>
-        )}
       </div>
     </Link>
   );

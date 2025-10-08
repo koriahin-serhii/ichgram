@@ -73,6 +73,7 @@
 }
 
 .editButton,
+.deleteButton,
 .followButton,
 .messageButton {
   padding: 7px 40px;
@@ -88,6 +89,20 @@
 .editButton:hover,
 .messageButton:hover {
   background: #dddbdb;
+}
+
+.deleteButton {
+  background: #ed4956;
+  color: white;
+}
+
+.deleteButton:hover {
+  background: #c92a37;
+}
+
+.deleteButton:disabled {
+  background: #ffa8b0;
+  cursor: not-allowed;
 }
 
 .followButton.follow {

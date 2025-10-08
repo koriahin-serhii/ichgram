@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { getProfile, updateProfile } from '../controllers/userController.js';
+import { getProfile, updateProfile, deleteProfile } from '../controllers/userController.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
 import multer from 'multer';
 
@@ -13,5 +13,8 @@ router.get('/profile/:id', authMiddleware, getProfile);
 
 // Update profile (requires authentication and file upload)
 router.put('/profile', authMiddleware, upload.single('profileImage'), updateProfile);
+
+// Delete profile (requires authentication)
+router.delete('/profile', authMiddleware, deleteProfile);
 
 export default router;

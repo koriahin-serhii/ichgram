@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { usersApi } from '../../api/users';
+import useAuth from '../../../app/providers/useAuth';
 import styles from './ProfileHeader.module.css';
 import type { UserProfile } from '../../api/users';
 
@@ -19,7 +22,27 @@ export default function ProfileHeader({
   isFollowLoading = false,
 }: ProfileHeaderProps) {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [isBioExpanded, setIsBioExpanded] = useState(false);
+
+  const deleteProfileMutation = useMutation({
+    mutationFn: usersApi.deleteProfile,
+    onSuccess: () => {
+      // Logout and redirect to signup
+      logout();
+      navigate('/signup', { replace: true });
+    },
+    onError: (error) => {
+      console.error('Failed to delete profile:', error);
+      alert('Failed to delete profile. Please try again.');
+    },
+  });
+
+  const handleDeleteProfile = () => {
+    if (window.confirm('Are you sure you want to delete your profile? This action cannot be undone. All your posts, comments, and messages will be permanently deleted.')) {
+      deleteProfileMutation.mutate();
+    }
+  };
 
   const handleFollowClick = () => {
     if (user.isFollowing) {
@@ -67,6 +90,13 @@ export default function ProfileHeader({
                   onClick={() => navigate('/edit-profile')}
                 >
                   Edit profile
+                </button>
+                <button
+                  className={styles.deleteButton}
+                  onClick={handleDeleteProfile}
+                  disabled={deleteProfileMutation.isPending}
+                >
+                  {deleteProfileMutation.isPending ? 'Deleting...' : 'Delete profile'}
                 </button>
               </>
             ) : (

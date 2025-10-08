@@ -84,6 +84,11 @@ export const usersApi = {
     });
     return response.data;
   },
+
+  // Delete user profile
+  deleteProfile: async (): Promise<void> => {
+    await client.delete('/api/user/profile');
+  },
 };
 
 // Helpers to combine user data with stats

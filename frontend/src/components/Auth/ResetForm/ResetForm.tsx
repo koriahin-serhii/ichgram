@@ -4,7 +4,7 @@ import Button from '@shared/components/Button/Button';
 import Lock from '@assets/icons/lock.svg?react';
 import styles from './resetForm.module.css';
 import { Link } from 'react-router-dom';
-import useAuth from '@app/providers/useAuth';
+import * as AuthAPI from '@shared/api/auth';
 
 export type ResetFormProps = {
   onSuccess?: () => void;
@@ -13,12 +13,13 @@ export type ResetFormProps = {
 export default function ResetForm({ onSuccess }: ResetFormProps) {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const { login } = useAuth();
+  const [error, setError] = useState<string>('');
+  const [success, setSuccess] = useState<string>('');
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setError('');
+    setSuccess('');
 
     // Validation
     if (!email.trim()) {
@@ -34,10 +35,11 @@ export default function ResetForm({ onSuccess }: ResetFormProps) {
 
     setIsSubmitting(true);
     try {
-      await login(email);
+      const response = await AuthAPI.resetPassword({ email });
+      setSuccess(response.message);
       onSuccess?.();
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : 'Login failed';
+      const msg = e instanceof Error ? e.message : 'Password reset failed';
       setError(msg);
     } finally {
       setIsSubmitting(false);
@@ -57,13 +59,19 @@ export default function ResetForm({ onSuccess }: ResetFormProps) {
         </div>
         <form className={styles.form} onSubmit={onSubmit}>
           <TextField
-            placeholder="Username or email"
+            placeholder="Email address"
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           {error && <div className={styles.error}>{error}</div>}
+          {success && (
+            <div className={styles.success}>
+              {success}
+            </div>
+          )}
           <Button type="submit" block disabled={isSubmitting}>
-            Reset your password
+            {isSubmitting ? 'Sending...' : 'Reset your password'}
           </Button>
           <div className={styles.separator}>
             <span>OR</span>

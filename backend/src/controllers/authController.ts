@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel.js';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import dotenv from 'dotenv';
+import { sendPasswordResetEmail } from '../utils/emailService.js';
 
 dotenv.config();
 
@@ -106,5 +108,51 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     });
   } catch (error) {
     res.status(401).json({ message: 'Invalid token' });
+  }
+};
+
+// Reset Password - sends temporary password to email
+export const resetPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+    
+    // Find user by email
+    const user = await User.findOne({ email });
+    if (!user) {
+      // Don't reveal if email exists for security
+      return res.status(200).json({ 
+        message: 'If this email exists, a password reset email has been sent' 
+      });
+    }
+    
+    // Generate temporary password (8 characters)
+    const tempPassword = crypto.randomBytes(4).toString('hex');
+    
+    // Update user password (will be hashed by pre-save hook)
+    user.password = tempPassword;
+    await user.save();
+    
+    // Send email with temporary password
+    try {
+      await sendPasswordResetEmail(email, tempPassword);
+      console.log(`Password reset email sent to ${email}`);
+    } catch (emailError) {
+      console.error('Email sending failed:', emailError);
+      // Revert password change if email fails
+      return res.status(500).json({ 
+        message: 'Failed to send reset email. Please try again later.' 
+      });
+    }
+    
+    res.status(200).json({ 
+      message: 'Password reset email has been sent. Please check your inbox.' 
+    });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({ message: 'Server error', error });
   }
 };

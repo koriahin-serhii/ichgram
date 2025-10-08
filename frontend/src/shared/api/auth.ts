@@ -8,6 +8,10 @@ export type RegisterPayload = {
   password: string;
   fullName: string;
 };
+export type ResetPasswordPayload = { email: string };
+export type ResetPasswordResponse = { 
+  message: string;
+};
 
 export async function login(data: LoginPayload) {
   const res = await api.post<AuthResponse>('/api/auth/login', data);
@@ -25,5 +29,10 @@ export async function logout() {
 
 export async function getCurrentUser() {
   const res = await api.get<AuthResponse>('/api/auth/me');
+  return res.data;
+}
+
+export async function resetPassword(data: ResetPasswordPayload) {
+  const res = await api.post<ResetPasswordResponse>('/api/auth/reset-password', data);
   return res.data;
 }

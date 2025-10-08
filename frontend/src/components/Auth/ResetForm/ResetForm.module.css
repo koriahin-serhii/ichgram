@@ -64,6 +64,31 @@
   border-radius: 4px;
   text-align: center;
 }
+.success {
+  color: #059669;
+  font-size: 13px;
+  padding: 8px;
+  background: #d1fae5;
+  border-radius: 4px;
+  text-align: center;
+}
+.tempPassword {
+  margin-top: 8px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #059669;
+  border-radius: 4px;
+  font-size: 12px;
+}
+.tempPassword strong {
+  font-size: 14px;
+  color: #047857;
+  font-family: monospace;
+}
+.tempPassword small {
+  color: #6b7280;
+  font-size: 11px;
+}
 .separator {
   display: flex;
   align-items: center;

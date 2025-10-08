@@ -12,6 +12,7 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import { Server as SocketIOServer } from 'socket.io';
 import { setupSocketIO } from './utils/socket.js';
+import { setSocketIO } from './utils/socketInstance.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
@@ -54,6 +55,7 @@ const io = new SocketIOServer(server, {
     credentials: true,
   },
 });
+setSocketIO(io);
 setupSocketIO(io);
 
 server.listen(PORT, async () => {

@@ -10,12 +10,16 @@ export const initSocket = (userId: string): Socket => {
     });
 
     socket.on('connect', () => {
-      console.log('Socket connected');
+      console.log('✅ Socket connected, joining room:', userId);
       socket?.emit('join', userId);
     });
 
     socket.on('disconnect', () => {
-      console.log('Socket disconnected');
+      console.log('❌ Socket disconnected');
+    });
+
+    socket.on('receiveMessage', (message) => {
+      console.log('📨 Received message via socket:', message);
     });
   }
 

@@ -1,6 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useMemo, useEffect } from 'react';
 import { useConversations } from '../../../shared/api/messages';
 import useAuth from '../../../app/providers/useAuth';
+import { getSocket } from '../../../shared/utils/socket';
+import { useQueryClient } from '@tanstack/react-query';
+import { messageKeys } from '../../../shared/api/messages';
 import styles from './ConversationsList.module.css';
 
 const formatTime = (date: string) => {
@@ -20,14 +24,70 @@ const formatTime = (date: string) => {
   return messageDate.toLocaleDateString();
 };
 
-export const ConversationsList = () => {
+interface PreselectedUser {
+  userId?: string;
+  userName?: string;
+  userImage?: string;
+}
+
+interface ConversationsListProps {
+  preselectedUser?: PreselectedUser | null;
+}
+
+export const ConversationsList = ({ preselectedUser }: ConversationsListProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const queryClient = useQueryClient();
   const { data: conversations, isLoading } = useConversations();
 
   // Extract userId from pathname like /messages/68d1a4a2e45b39fbbc7060f0
   const activeUserId = location.pathname.split('/messages/')[1] || null;
+
+  // Subscribe to new messages for updating conversations list
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket) return;
+
+    const handleReceiveMessage = () => {
+      // Refresh conversations list when new message arrives
+      queryClient.invalidateQueries({
+        queryKey: messageKeys.conversations(),
+      });
+    };
+
+    socket.on('receiveMessage', handleReceiveMessage);
+
+    return () => {
+      socket.off('receiveMessage', handleReceiveMessage);
+    };
+  }, [queryClient]);
+
+  // Merge preselected user with existing conversations
+  const displayConversations = useMemo(() => {
+    const convList = conversations || [];
+    
+    // If there's a preselected user and they're not in the list, add them
+    if (preselectedUser?.userId) {
+      const userExists = convList.some(conv => conv._id === preselectedUser.userId);
+      
+      if (!userExists) {
+        return [
+          {
+            _id: preselectedUser.userId,
+            name: preselectedUser.userName || 'User',
+            profileImage: preselectedUser.userImage || '',
+            lastMessageSender: '',
+            lastMessageDate: new Date().toISOString(),
+            isPreselected: true, // Flag to identify this is a new conversation
+          },
+          ...convList,
+        ];
+      }
+    }
+    
+    return convList;
+  }, [conversations, preselectedUser]);
 
   if (isLoading) {
     return (
@@ -48,16 +108,17 @@ export const ConversationsList = () => {
 
       {/* Conversations list */}
       <div className={styles.conversationsList}>
-        {!conversations || conversations.length === 0 ? (
+        {!displayConversations || displayConversations.length === 0 ? (
           <div className={styles.empty}>
             <p>Your messages</p>
             <span>Send private messages to a friend</span>
           </div>
         ) : (
-          conversations.map((conv) => {
+          displayConversations.map((conv) => {
             const isActive = conv._id === activeUserId;
             const isOwnMessage = conv.lastMessageSender === user?.id;
             const messageSender = isOwnMessage ? 'You' : conv.name;
+            const isPreselected = 'isPreselected' in conv && conv.isPreselected;
             
             return (
               <div
@@ -79,7 +140,10 @@ export const ConversationsList = () => {
                     <span className={styles.name}>{conv.name}</span>
                   </div>
                   <p className={styles.lastMessage}>
-                    {messageSender} sent a message · {formatTime(conv.lastMessageDate)}
+                    {isPreselected 
+                      ? 'Start a conversation' 
+                      : `${messageSender} sent a message · ${formatTime(conv.lastMessageDate)}`
+                    }
                   </p>
                 </div>
               </div>

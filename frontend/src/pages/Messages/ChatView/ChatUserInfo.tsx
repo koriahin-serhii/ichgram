@@ -6,7 +6,7 @@ interface ChatUserInfoProps {
   name: string;
   fullName?: string;
   profileImage?: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
 export const ChatUserInfo = ({ userId, name, fullName, profileImage, createdAt }: ChatUserInfoProps) => {
@@ -46,7 +46,7 @@ export const ChatUserInfo = ({ userId, name, fullName, profileImage, createdAt }
         View profile
       </button>
       
-      <p className={styles.date}>{formatDate(createdAt)}</p>
+      {createdAt && <p className={styles.date}>{formatDate(createdAt)}</p>}
     </div>
   );
 };

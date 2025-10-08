@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { AuthAPI } from '@api';
 import { AuthContext, type AuthUser, type AuthContextValue } from './authContext';
+import { initSocket, disconnectSocket } from '../../shared/utils/socket';
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
@@ -26,6 +27,19 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     
     checkAuth();
   }, []);
+
+  // Initialize socket when user is authenticated
+  useEffect(() => {
+    if (user?.id) {
+      initSocket(user.id);
+    } else {
+      disconnectSocket();
+    }
+    
+    return () => {
+      disconnectSocket();
+    };
+  }, [user?.id]);
 
   const value = useMemo<AuthContextValue>(() => ({
     user,

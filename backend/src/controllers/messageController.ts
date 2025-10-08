@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import MessageModel from '../models/messageModel.js';
 import { Types } from 'mongoose';
+import { getSocketIO } from '../utils/socketInstance.js';
 
 interface AuthenticatedRequest extends Request {
   user?: string | Types.ObjectId;
@@ -113,6 +114,15 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
     await message.save();
     await message.populate('sender', '_id name fullName profileImage');
     await message.populate('recipient', '_id name fullName profileImage');
+
+    // Send message via socket to recipient and sender
+    const io = getSocketIO();
+    if (io) {
+      // Send to recipient
+      io.to(userId).emit('receiveMessage', message);
+      // Also send to sender (for multi-device support)
+      io.to(String(sender)).emit('receiveMessage', message);
+    }
 
     res.status(201).json(message);
   } catch (error) {

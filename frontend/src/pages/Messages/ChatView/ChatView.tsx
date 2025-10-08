@@ -1,8 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useMessages, useSendMessage } from '../../../shared/api/messages';
+import { useMessages, useSendMessage, type Message } from '../../../shared/api/messages';
+import { useUserProfile } from '../../../shared/api/users';
 import useAuth from '../../../app/providers/useAuth';
 import { ChatUserInfo } from './ChatUserInfo';
+import { getSocket } from '../../../shared/utils/socket';
+import { useQueryClient } from '@tanstack/react-query';
+import { messageKeys } from '../../../shared/api/messages';
 import styles from './ChatView.module.css';
 
 export const ChatView = () => {
@@ -10,14 +14,40 @@ export const ChatView = () => {
   const { user: currentUser } = useAuth();
   const [message, setMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
 
-  const { data: messages, isLoading } = useMessages(userId!);
+  const { data: messages, isLoading: messagesLoading } = useMessages(userId!);
+  const { data: userProfile, isLoading: userLoading } = useUserProfile(userId!);
   const sendMessageMutation = useSendMessage();
 
   // Auto scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Subscribe to new messages via socket
+  useEffect(() => {
+    const socket = getSocket();
+    if (!socket || !userId) return;
+
+    const handleReceiveMessage = (newMessage: Message) => {
+      // Update messages only if it's from the current chat user
+      if (newMessage.sender._id === userId || newMessage.recipient._id === userId) {
+        queryClient.invalidateQueries({
+          queryKey: messageKeys.conversation(userId),
+        });
+        queryClient.invalidateQueries({
+          queryKey: messageKeys.conversations(),
+        });
+      }
+    };
+
+    socket.on('receiveMessage', handleReceiveMessage);
+
+    return () => {
+      socket.off('receiveMessage', handleReceiveMessage);
+    };
+  }, [userId, queryClient]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,7 +75,7 @@ export const ChatView = () => {
     );
   }
 
-  if (isLoading) {
+  if (messagesLoading || userLoading) {
     return (
       <div className={styles.loading}>
         <p>Loading messages...</p>
@@ -53,10 +83,10 @@ export const ChatView = () => {
     );
   }
 
-  // Get the other user's info from the first message
-  const otherUser = messages && messages.length > 0
+  // Get the other user's info from userProfile or the first message
+  const otherUser = userProfile || (messages && messages.length > 0
     ? (messages[0].sender._id === currentUser?.id ? messages[0].recipient : messages[0].sender)
-    : null;
+    : null);
 
   return (
     <div className={styles.container}>
@@ -77,13 +107,13 @@ export const ChatView = () => {
       {/* Messages area */}
       <div className={styles.messagesArea}>
         {/* User info card */}
-        {otherUser && messages && messages.length > 0 && (
+        {otherUser && (
           <ChatUserInfo
             userId={otherUser._id}
             name={otherUser.name}
             fullName={otherUser.fullName}
             profileImage={otherUser.profileImage}
-            createdAt={messages[0].createdAt}
+            createdAt={messages && messages.length > 0 ? messages[0].createdAt : undefined}
           />
         )}
 

@@ -129,3 +129,41 @@ export const sendMessage = async (req: AuthenticatedRequest, res: Response) => {
     res.status(500).json({ message: 'Server error', error });
   }
 };
+
+// Delete all messages with a specific user
+export const deleteConversation = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  try {
+    const { userId } = req.params;
+    const currentUserId = req.user;
+
+    // Delete all messages between current user and the specified user
+    await MessageModel.deleteMany({
+      $or: [
+        { sender: currentUserId, recipient: userId },
+        { sender: userId, recipient: currentUserId },
+      ],
+    });
+
+    // Notify both users via socket about conversation deletion
+    const io = getSocketIO();
+    if (io) {
+      // Notify the other user
+      io.to(userId).emit('conversationDeleted', {
+        deletedBy: String(currentUserId),
+        userId: String(currentUserId),
+      });
+      // Notify current user (for multi-device support)
+      io.to(String(currentUserId)).emit('conversationDeleted', {
+        deletedBy: String(currentUserId),
+        userId: userId,
+      });
+    }
+
+    res.json({ message: 'Conversation deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};

@@ -59,6 +59,11 @@ export const messagesApi = {
     });
     return response.data;
   },
+
+  // Delete conversation with a user
+  deleteConversation: async (userId: ID): Promise<void> => {
+    await client.delete(`/api/messages/${userId}`);
+  },
 };
 
 // React Query hooks
@@ -87,6 +92,19 @@ export function useSendMessage() {
       queryClient.invalidateQueries({
         queryKey: messageKeys.conversation(variables.recipientId),
       });
+      queryClient.invalidateQueries({
+        queryKey: messageKeys.conversations(),
+      });
+    },
+  });
+}
+
+export function useDeleteConversation() {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, Error, ID>({
+    mutationFn: (userId: ID) => messagesApi.deleteConversation(userId),
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: messageKeys.conversations(),
       });

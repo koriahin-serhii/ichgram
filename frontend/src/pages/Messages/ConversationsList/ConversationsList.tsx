@@ -56,10 +56,19 @@ export const ConversationsList = ({ preselectedUser }: ConversationsListProps) =
       });
     };
 
+    const handleConversationDeleted = () => {
+      // Refresh conversations list when conversation is deleted
+      queryClient.invalidateQueries({
+        queryKey: messageKeys.conversations(),
+      });
+    };
+
     socket.on('receiveMessage', handleReceiveMessage);
+    socket.on('conversationDeleted', handleConversationDeleted);
 
     return () => {
       socket.off('receiveMessage', handleReceiveMessage);
+      socket.off('conversationDeleted', handleConversationDeleted);
     };
   }, [queryClient]);
 

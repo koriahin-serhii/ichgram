@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useMessages, useSendMessage, type Message } from '../../../shared/api/messages';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useMessages, useSendMessage, useDeleteConversation, type Message } from '../../../shared/api/messages';
 import { useUserProfile } from '../../../shared/api/users';
 import useAuth from '../../../app/providers/useAuth';
 import { ChatUserInfo } from './ChatUserInfo';
@@ -12,6 +12,7 @@ import styles from './ChatView.module.css';
 export const ChatView = () => {
   const { userId } = useParams<{ userId: string }>();
   const { user: currentUser } = useAuth();
+  const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
@@ -19,6 +20,7 @@ export const ChatView = () => {
   const { data: messages, isLoading: messagesLoading } = useMessages(userId!);
   const { data: userProfile, isLoading: userLoading } = useUserProfile(userId!);
   const sendMessageMutation = useSendMessage();
+  const deleteConversationMutation = useDeleteConversation();
 
   // Auto scroll to bottom when new messages arrive
   useEffect(() => {
@@ -42,12 +44,24 @@ export const ChatView = () => {
       }
     };
 
+    const handleConversationDeleted = (data: { deletedBy: string; userId: string }) => {
+      // If conversation with current user is deleted, redirect to messages
+      if (data.userId === userId) {
+        queryClient.invalidateQueries({
+          queryKey: messageKeys.conversations(),
+        });
+        navigate('/messages');
+      }
+    };
+
     socket.on('receiveMessage', handleReceiveMessage);
+    socket.on('conversationDeleted', handleConversationDeleted);
 
     return () => {
       socket.off('receiveMessage', handleReceiveMessage);
+      socket.off('conversationDeleted', handleConversationDeleted);
     };
-  }, [userId, queryClient]);
+  }, [userId, queryClient, navigate]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,6 +78,21 @@ export const ChatView = () => {
         },
       }
     );
+  };
+
+  const handleDeleteConversation = () => {
+    if (!userId) return;
+    
+    const confirmed = window.confirm('Are you sure you want to delete this conversation? All messages will be permanently deleted.');
+    
+    if (confirmed) {
+      deleteConversationMutation.mutate(userId, {
+        onSuccess: () => {
+          // Navigate back to messages list after deletion
+          navigate('/messages');
+        },
+      });
+    }
   };
 
   if (!userId) {
@@ -102,6 +131,14 @@ export const ChatView = () => {
           )}
           <span className={styles.username}>{otherUser?.name}</span>
         </div>
+        <button 
+          className={styles.deleteButton}
+          onClick={handleDeleteConversation}
+          title="Delete conversation"
+          aria-label="Delete conversation"
+        >
+          ✕
+        </button>
       </div>
 
       {/* Messages area */}

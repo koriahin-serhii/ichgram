@@ -4,6 +4,7 @@ import {
   getConversations,
   getMessages,
   sendMessage,
+  deleteConversation,
 } from '../controllers/messageController.js';
 
 const router: Router = express.Router();
@@ -16,5 +17,8 @@ router.get('/:userId', authMiddleware, getMessages);
 
 // Send a message
 router.post('/:userId', authMiddleware, sendMessage);
+
+// Delete conversation with a user
+router.delete('/:userId', authMiddleware, deleteConversation);
 
 export default router;

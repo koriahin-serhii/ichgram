@@ -153,6 +153,15 @@ export default function PostDetailModal({
     });
   };
 
+  const handleNavigateToProfile = (userId: string) => {
+    onClose();
+    if (userId === user?.id) {
+      navigate('/my-profile');
+    } else {
+      navigate(`/profile/${userId}`);
+    }
+  };
+
   const handleEdit = () => {
     if (!post) return;
     
@@ -254,7 +263,7 @@ export default function PostDetailModal({
               <div className={styles.userInfo}>
                 <div
                   className={styles.avatar}
-                  onClick={() => navigate(`/profile/${post.author?._id}`)}
+                  onClick={() => handleNavigateToProfile(post.author?._id || '')}
                 >
                   <div className={styles.avatarInner}>
                     {post.author?.profileImage ? (
@@ -272,7 +281,7 @@ export default function PostDetailModal({
                 <div className={styles.userDetails}>
                   <span
                     className={styles.username}
-                    onClick={() => navigate(`/profile/${post.author?._id}`)}
+                    onClick={() => handleNavigateToProfile(post.author?._id || '')}
                   >
                     {post.author?.name || 'Unknown'}
                   </span>
@@ -309,7 +318,7 @@ export default function PostDetailModal({
                 <div className={styles.comment}>
                   <div
                     className={styles.commentAvatar}
-                    onClick={() => navigate(`/profile/${post.author?._id}`)}
+                    onClick={() => handleNavigateToProfile(post.author?._id || '')}
                   >
                     <div className={styles.avatarInner}>
                       {post.author?.profileImage ? (
@@ -328,7 +337,7 @@ export default function PostDetailModal({
                     <div className={styles.commentText}>
                       <span
                         className={styles.commentUsername}
-                        onClick={() => navigate(`/profile/${post.author?._id}`)}
+                        onClick={() => handleNavigateToProfile(post.author?._id || '')}
                       >
                         {post.author?.name}
                       </span>{' '}
@@ -353,7 +362,7 @@ export default function PostDetailModal({
                   <div key={c._id} className={styles.comment}>
                     <div
                       className={styles.commentAvatar}
-                      onClick={() => navigate(`/profile/${c.user._id}`)}
+                      onClick={() => handleNavigateToProfile(c.user._id)}
                     >
                       <div className={styles.avatarInner}>
                         {c.user.profileImage ? (
@@ -369,7 +378,7 @@ export default function PostDetailModal({
                       <div className={styles.commentText}>
                         <span
                           className={styles.commentUsername}
-                          onClick={() => navigate(`/profile/${c.user._id}`)}
+                          onClick={() => handleNavigateToProfile(c.user._id)}
                         >
                           {c.user.name}
                         </span>{' '}

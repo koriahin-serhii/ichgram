@@ -11,10 +11,12 @@ import {
 import PostDetailModal from '@shared/components/PostDetailModal/PostDetailModal';
 import { PostDetailProvider } from '@app/providers/PostDetailProvider';
 import { usePostDetail } from '@app/providers/usePostDetail';
+import { useScrollRestoration } from '@shared/utils/useScrollRestoration';
 import styles from './MainLayout.module.css';
 
 function MainLayoutContent({ children }: { children: ReactNode }) {
   const location = useLocation();
+  const scrollContainerRef = useScrollRestoration();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
@@ -65,21 +67,22 @@ function MainLayoutContent({ children }: { children: ReactNode }) {
         />
       )}
       <main
+        ref={scrollContainerRef}
         className={`${styles.main} ${!isAuthPage ? styles.withSidebar : ''}`}
       >
         {children}
+        {!isAuthPage && (
+          <Footer
+            onSearchClick={handleSearchOpen}
+            onSearchClose={handleSearchClose}
+            onNotificationsClick={handleNotificationsOpen}
+            onNotificationsClose={handleNotificationsClose}
+            onCreateClick={handleCreatePostOpen}
+            onCreateClose={handleCreatePostClose}
+            onPostDetailClose={closePostDetail}
+          />
+        )}
       </main>
-      {!isAuthPage && (
-        <Footer
-          onSearchClick={handleSearchOpen}
-          onSearchClose={handleSearchClose}
-          onNotificationsClick={handleNotificationsOpen}
-          onNotificationsClose={handleNotificationsClose}
-          onCreateClick={handleCreatePostOpen}
-          onCreateClose={handleCreatePostClose}
-          onPostDetailClose={closePostDetail}
-        />
-      )}
 
       <SearchSidebar isOpen={isSearchOpen} onClose={handleSearchClose} />
 

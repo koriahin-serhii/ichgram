@@ -12,12 +12,14 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-40%, -50%);
   background: white;
   border-radius: 12px;
   width: 90%;
-  max-width: 900px;
-  max-height: 90vh;
+  max-width: 600px;
+  min-height: 300px;
+  max-height: 600px;
+  height: 70vh;
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -86,13 +88,13 @@
 }
 
 .imageSection {
-  flex: 1.2;
+  flex: 1.5;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #fafafa;
   position: relative;
-  min-height: 500px;
+  overflow: hidden;
 }
 
 .uploadArea {
@@ -146,12 +148,14 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
 
 .previewImage {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .changeImageBtn {

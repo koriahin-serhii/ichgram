@@ -1,13 +1,25 @@
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { ConversationsList } from './ConversationsList/ConversationsList';
 import { ChatView } from './ChatView/ChatView';
+import { BotChatView } from './ChatView/BotChatView';
 import styles from './Messages.module.css';
 
 interface LocationState {
   userId?: string;
   userName?: string;
   userImage?: string;
+}
+
+// Component to decide which chat view to show
+function ChatRouter() {
+  const { userId } = useParams<{ userId: string }>();
+  
+  if (userId === 'ai-bot') {
+    return <BotChatView />;
+  }
+  
+  return <ChatView />;
 }
 
 export default function Messages() {
@@ -46,7 +58,7 @@ export default function Messages() {
               </div>
             }
           />
-          <Route path="/:userId" element={<ChatView />} />
+          <Route path="/:userId" element={<ChatRouter />} />
         </Routes>
       </div>
     </div>

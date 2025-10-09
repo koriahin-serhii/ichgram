@@ -34,7 +34,9 @@ interface ConversationsListProps {
   preselectedUser?: PreselectedUser | null;
 }
 
-export const ConversationsList = ({ preselectedUser }: ConversationsListProps) => {
+export const ConversationsList = ({
+  preselectedUser,
+}: ConversationsListProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -75,13 +77,26 @@ export const ConversationsList = ({ preselectedUser }: ConversationsListProps) =
   // Merge preselected user with existing conversations
   const displayConversations = useMemo(() => {
     const convList = conversations || [];
-    
+
+    // AI Bot - always at the top
+    const aiBot = {
+      _id: 'ai-bot',
+      name: 'SKYJECTIV AI Assistant',
+      profileImage: '/bot-avatar.jpg',
+      lastMessageSender: '',
+      lastMessageDate: new Date().toISOString(),
+      isBot: true,
+    };
+
     // If there's a preselected user and they're not in the list, add them
     if (preselectedUser?.userId) {
-      const userExists = convList.some(conv => conv._id === preselectedUser.userId);
-      
+      const userExists = convList.some(
+        (conv) => conv._id === preselectedUser.userId
+      );
+
       if (!userExists) {
         return [
+          aiBot,
           {
             _id: preselectedUser.userId,
             name: preselectedUser.userName || 'User',
@@ -94,8 +109,8 @@ export const ConversationsList = ({ preselectedUser }: ConversationsListProps) =
         ];
       }
     }
-    
-    return convList;
+
+    return [aiBot, ...convList];
   }, [conversations, preselectedUser]);
 
   if (isLoading) {
@@ -128,15 +143,22 @@ export const ConversationsList = ({ preselectedUser }: ConversationsListProps) =
             const isOwnMessage = conv.lastMessageSender === user?.id;
             const messageSender = isOwnMessage ? 'You' : conv.name;
             const isPreselected = 'isPreselected' in conv && conv.isPreselected;
-            
+            const isBot = 'isBot' in conv && conv.isBot;
+
             return (
               <div
                 key={conv._id}
-                className={`${styles.conversationItem} ${isActive ? styles.active : ''}`}
+                className={`${styles.conversationItem} ${
+                  isActive ? styles.active : ''
+                }`}
                 onClick={() => navigate(`/messages/${conv._id}`)}
               >
                 <div className={styles.conversationAvatar}>
-                  {conv.profileImage ? (
+                  {isBot ? (
+                    <div className={styles.botAvatar}>
+                      <img src="/bot-avatar.jpg" alt="Bot AI" />
+                    </div>
+                  ) : conv.profileImage ? (
                     <img src={conv.profileImage} alt={conv.name} />
                   ) : (
                     <div className={styles.avatarPlaceholder}>
@@ -149,10 +171,13 @@ export const ConversationsList = ({ preselectedUser }: ConversationsListProps) =
                     <span className={styles.name}>{conv.name}</span>
                   </div>
                   <p className={styles.lastMessage}>
-                    {isPreselected 
-                      ? 'Start a conversation' 
-                      : `${messageSender} sent a message · ${formatTime(conv.lastMessageDate)}`
-                    }
+                    {isBot
+                      ? 'AI Assistant ready to help you'
+                      : isPreselected
+                      ? 'Start a conversation'
+                      : `${messageSender} sent a message · ${formatTime(
+                          conv.lastMessageDate
+                        )}`}
                   </p>
                 </div>
               </div>

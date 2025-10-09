@@ -191,6 +191,7 @@ export const ChatView = () => {
             </div>
           );
         })}
+        
         <div ref={messagesEndRef} />
       </div>
 

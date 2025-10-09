@@ -1,6 +1,7 @@
 import client from './client';
 import type { ID } from './types';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { postKeys } from './posts';
 
 // Types for comments
 export interface Comment {
@@ -56,9 +57,20 @@ export function useAddComment() {
     mutationFn: ({ postId, content }) =>
       commentsApi.addComment(postId, content),
     onSuccess: (_, variables) => {
+      // Invalidate comments for this specific post
       queryClient.invalidateQueries({
         queryKey: commentKeys.byPost(variables.postId),
       });
+      
+      // Invalidate all user posts to update commentsCount in PostCard
+      queryClient.invalidateQueries({ queryKey: [...postKeys.all, 'user'] });
+      
+      // Invalidate feed and explore pages
+      queryClient.invalidateQueries({ queryKey: postKeys.feed() });
+      queryClient.invalidateQueries({ queryKey: postKeys.explore() });
+      
+      // Invalidate post details
+      queryClient.invalidateQueries({ queryKey: postKeys.detail(variables.postId) });
     },
   });
 }

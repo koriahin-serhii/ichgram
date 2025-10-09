@@ -47,9 +47,12 @@ export const BotChatView = () => {
     ]);
   };
 
+  // Storage key with user ID to separate chats per user
+  const storageKey = `bot-chat-messages-${currentUser?.id || 'guest'}`;
+
   // Load messages from sessionStorage on mount
   useEffect(() => {
-    const savedMessages = sessionStorage.getItem('bot-chat-messages');
+    const savedMessages = sessionStorage.getItem(storageKey);
     if (savedMessages && savedMessages !== '[]') {
       try {
         const parsed = JSON.parse(savedMessages);
@@ -62,14 +65,14 @@ export const BotChatView = () => {
       initializeBotChat();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentUser?.id, storageKey]);
 
   // Save messages to sessionStorage whenever they change
   useEffect(() => {
     if (botMessages.length > 0) {
-      sessionStorage.setItem('bot-chat-messages', JSON.stringify(botMessages));
+      sessionStorage.setItem(storageKey, JSON.stringify(botMessages));
     }
-  }, [botMessages]);
+  }, [botMessages, storageKey]);
 
   // Auto scroll to bottom when new messages arrive
   useEffect(() => {
@@ -230,6 +233,17 @@ export const BotChatView = () => {
               <div className={styles.message}>
                 <p>{msg.text}</p>
               </div>
+              {isOwn && (
+                <div className={styles.messageAvatar}>
+                  {currentUser?.profileImage ? (
+                    <img src={currentUser.profileImage} alt={currentUser.name} />
+                  ) : (
+                    <div className={styles.avatarPlaceholder}>
+                      {currentUser?.name?.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           );
         })}

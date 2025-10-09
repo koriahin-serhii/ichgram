@@ -188,7 +188,7 @@ function getRandomResponse(responses: string[]): string {
 // Get initial greeting message
 export function getInitialBotMessage(): BotResponse {
   return {
-    text: "Привет! 👋 Я SKYJECTIV AI Ассистент. Помогу вам разобраться в приложении. Спрашивайте о:\n\n• Создании и оптимизации постов\n• Управлении профилем\n• Функциях сообщений\n• Уведомлениях\n\nЧем могу помочь?",
+    text: "Привет! 👋 Я SKYJECTIV AI Ассистент. Помогу вам разобраться в приложении.\n\nЧем могу помочь?",
     timestamp: new Date(),
   };
 }

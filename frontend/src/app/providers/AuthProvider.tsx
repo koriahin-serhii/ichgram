@@ -82,6 +82,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         await AuthAPI.logout();
       } finally {
         setUser(null);
+        
+        // Clear all bot chat messages from sessionStorage
+        const botChatKeys = Object.keys(sessionStorage).filter(key => 
+          key.startsWith('bot-chat-messages-')
+        );
+        botChatKeys.forEach(key => sessionStorage.removeItem(key));
+        
         queryClient.cancelQueries();
         queryClient.clear();
       }

@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -21,7 +21,7 @@ interface ChatResponse {
 export const useAIChatMutation = () => {
   return useMutation({
     mutationFn: async (data: ChatRequest): Promise<ChatResponse> => {
-      const response = await axios.post(`${API_URL}/ai/chat`, data, {
+      const response = await axios.post(`${API_URL}/api/ai/chat`, data, {
         withCredentials: true,
       });
       return response.data;

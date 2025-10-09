@@ -67,7 +67,19 @@ export default function PostCard({ post, onPostClick }: PostCardProps) {
   };
 
   const handleCommentClick = () => {
-    onPostClick?.(post._id);
+    // This is only called for other users' posts, so navigate to messages
+    handleSendMessage();
+  };
+
+  const handleSendMessage = () => {
+    if (!post.author?._id) return;
+    navigate('/messages', {
+      state: {
+        userId: post.author._id,
+        userName: post.author.name,
+        userImage: post.author.profileImage,
+      },
+    });
   };
 
   const handleImageClick = () => {
@@ -159,23 +171,23 @@ export default function PostCard({ post, onPostClick }: PostCardProps) {
             </svg>
           </button>
           {!isOwnPost && (
-          <button
-            className={styles.actionBtn}
-            onClick={handleCommentClick}
-            aria-label="Comment"
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              style={{ transform: 'scaleX(-1)' }}
+            <button
+              className={styles.actionBtn}
+              onClick={handleCommentClick}
+              aria-label="Send message"
             >
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-            </svg>
-          </button>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                style={{ transform: 'scaleX(-1)' }}
+              >
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+              </svg>
+            </button>
           )}
         </div>
       </div>

@@ -114,6 +114,23 @@ export default function PostDetailModal({
     toggleLike.mutate(postId);
   };
 
+  const handleCommentClick = () => {
+    // This is only called for other users' posts, so navigate to messages
+    handleSendMessage();
+  };
+
+  const handleSendMessage = () => {
+    if (!post?.author?._id) return;
+    onClose(); // Close the modal first
+    navigate('/messages', {
+      state: {
+        userId: post.author._id,
+        userName: post.author.name,
+        userImage: post.author.profileImage,
+      },
+    });
+  };
+
   const handleEmojiClick = (emoji: string) => {
     setComment((prev) => prev + emoji);
     setShowEmojiPicker(false);
@@ -411,16 +428,15 @@ export default function PostDetailModal({
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                 </svg>
               </button>
-              <button
-                className={styles.actionBtn}
-                onClick={() =>
-                  document
-                    .querySelector<HTMLInputElement>(`.${styles.commentInput}`)
-                    ?.focus()
-                }
-              >
-                <CommentIcon />
-              </button>
+              {!isOwnPost && (
+                <button
+                  className={styles.actionBtn}
+                  onClick={handleCommentClick}
+                  aria-label="Send message"
+                >
+                  <CommentIcon />
+                </button>
+              )}
             </div>
 
             {/* Likes count */}

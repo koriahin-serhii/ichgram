@@ -37,7 +37,15 @@ export default function Explore() {
       : allPosts;
 
     setShuffledPosts(prev => {
-      // Get IDs of already shuffled posts
+      // Create a map of current posts by ID for quick lookup
+      const postsMap = new Map(filteredPosts.map(post => [post._id, post]));
+      
+      // Update existing posts with fresh data and filter out deleted ones
+      const updatedExisting = prev
+        .filter(post => postsMap.has(post._id))
+        .map(post => postsMap.get(post._id)!);
+      
+      // Get IDs of posts we already have
       const existingIds = new Set(prev.map(p => p._id));
       
       // Find new posts that aren't in our shuffled array yet
@@ -47,10 +55,11 @@ export default function Explore() {
         // Shuffle only new posts
         const shuffledNewPosts = [...newPosts].sort(() => Math.random() - 0.5);
         // Append to existing shuffled posts
-        return [...prev, ...shuffledNewPosts];
+        return [...updatedExisting, ...shuffledNewPosts];
       }
       
-      return prev;
+      // If no new posts, just return updated existing posts
+      return updatedExisting;
     });
   }, [data, user]);
 

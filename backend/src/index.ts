@@ -10,6 +10,7 @@ import searchRouters from './routes/searchRoutes.js';
 import followRoutes from './routes/followRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 import { Server as SocketIOServer } from 'socket.io';
 import { setupSocketIO } from './utils/socket.js';
 import { setSocketIO } from './utils/socketInstance.js';
@@ -47,6 +48,7 @@ app.use('/api/search', searchRouters);
 app.use('/api/follow', followRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/ai', aiRoutes);
 
 const io = new SocketIOServer(server, {
   cors: {

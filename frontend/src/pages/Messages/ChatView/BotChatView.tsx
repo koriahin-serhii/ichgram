@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { getBotResponse, getInitialBotMessage } from '../../../shared/utils/aiBot.ts';
+import { getBotResponse, getInitialBotMessage } from '../../../shared/utils/aiBot';
+import { useAIChatMutation } from '../../../shared/api/ai';
 import useAuth from '../../../app/providers/useAuth';
 import styles from './ChatView.module.css';
 
@@ -22,7 +23,9 @@ export const BotChatView = () => {
   const [message, setMessage] = useState('');
   const [botMessages, setBotMessages] = useState<BotMessage[]>([]);
   const [isBotTyping, setIsBotTyping] = useState(false);
+  const [useOpenAI, setUseOpenAI] = useState(false); // Toggle between OpenAI and local bot
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const aiChatMutation = useAIChatMutation();
 
   // Initialize bot conversation
   const initializeBotChat = () => {
@@ -73,7 +76,7 @@ export const BotChatView = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [botMessages, isBotTyping]);
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!message.trim()) return;
 
@@ -93,29 +96,98 @@ export const BotChatView = () => {
     };
 
     setBotMessages((prev) => [...prev, userMessage]);
+    const currentMessage = message;
     setMessage('');
     setIsBotTyping(true);
 
-    // Simulate bot typing and response
-    setTimeout(() => {
-      const botResp = getBotResponse(userMessage.text);
-      const botMessage: BotMessage = {
-        _id: (Date.now() + 1).toString(),
-        text: botResp.text,
-        sender: {
-          _id: 'ai-bot',
-          name: 'SKYJECTIV AI Assistant',
-        },
-        recipient: {
-          _id: currentUser?.id || '',
-          name: currentUser?.name || '',
-        },
-        createdAt: botResp.timestamp.toISOString(),
-      };
+    // Choose between OpenAI or local bot
+    if (useOpenAI) {
+      try {
+        // Prepare conversation history for OpenAI
+        const conversationHistory = botMessages.map(msg => ({
+          role: msg.sender._id === currentUser?.id ? 'user' as const : 'assistant' as const,
+          content: msg.text,
+        }));
 
-      setBotMessages((prev) => [...prev, botMessage]);
-      setIsBotTyping(false);
-    }, 800 + Math.random() * 1200);
+        // Call OpenAI API
+        const response = await aiChatMutation.mutateAsync({
+          message: currentMessage,
+          conversationHistory,
+        });
+
+        const botMessage: BotMessage = {
+          _id: (Date.now() + 1).toString(),
+          text: response.response,
+          sender: {
+            _id: 'ai-bot',
+            name: 'SKYJECTIV AI Ассистент',
+          },
+          recipient: {
+            _id: currentUser?.id || '',
+            name: currentUser?.name || '',
+          },
+          createdAt: response.timestamp,
+        };
+
+        setBotMessages((prev) => [...prev, botMessage]);
+        setIsBotTyping(false);
+      } catch (error: unknown) {
+        console.error('OpenAI error:', error);
+        
+        // Check if backend suggests to use local fallback
+        const axiosError = error as { response?: { data?: { fallback?: string; useLocalFallback?: boolean } } };
+        const errorData = axiosError?.response?.data;
+        let errorMessage = 'Извините, произошла ошибка. Переключаюсь на локальный режим.';
+        
+        if (errorData?.fallback) {
+          errorMessage = errorData.fallback;
+        }
+        
+        // Auto-switch to local mode if quota exceeded
+        if (errorData?.useLocalFallback) {
+          setUseOpenAI(false);
+        }
+        
+        // Show error message from bot
+        const errorBotMessage: BotMessage = {
+          _id: (Date.now() + 1).toString(),
+          text: `⚠️ ${errorMessage}`,
+          sender: {
+            _id: 'ai-bot',
+            name: 'SKYJECTIV AI Ассистент',
+          },
+          recipient: {
+            _id: currentUser?.id || '',
+            name: currentUser?.name || '',
+          },
+          createdAt: new Date().toISOString(),
+        };
+        
+        setBotMessages((prev) => [...prev, errorBotMessage]);
+        setIsBotTyping(false);
+      }
+    } else {
+      // Use local bot (keyword-based)
+      setTimeout(() => {
+        const botResp = getBotResponse(currentMessage);
+        const botMessage: BotMessage = {
+          _id: (Date.now() + 1).toString(),
+          text: botResp.text,
+          sender: {
+            _id: 'ai-bot',
+            name: 'SKYJECTIV AI Ассистент',
+          },
+          recipient: {
+            _id: currentUser?.id || '',
+            name: currentUser?.name || '',
+          },
+          createdAt: botResp.timestamp.toISOString(),
+        };
+
+        setBotMessages((prev) => [...prev, botMessage]);
+        setIsBotTyping(false);
+      }, 800 + Math.random() * 1200);
+    }
   };
 
   return (
@@ -126,9 +198,18 @@ export const BotChatView = () => {
           <img src="/bot-avatar.jpg" alt="AI Bot" className={styles.avatar} />
           <div>
             <span className={styles.username}>SKYJECTIV AI Assistant</span>
-            <p className={styles.userStatus}>Always active</p>
+            <p className={styles.userStatus}>
+              {useOpenAI ? '🤖 OpenAI Mode' : '📝 Keyword Mode'}
+            </p>
           </div>
         </div>
+        <button
+          onClick={() => setUseOpenAI(!useOpenAI)}
+          className={styles.deleteButton}
+          title={useOpenAI ? 'Switch to Keyword Bot' : 'Switch to OpenAI'}
+        >
+          {useOpenAI ? '📝' : '🤖'}
+        </button>
       </div>
 
       {/* Messages area */}

@@ -71,7 +71,8 @@ function MainLayoutContent({ children }: { children: ReactNode }) {
         className={`${styles.main} ${!isAuthPage ? styles.withSidebar : ''}`}
       >
         {children}
-        {!isAuthPage && (
+      </main>
+      {!isAuthPage && (
           <Footer
             onSearchClick={handleSearchOpen}
             onSearchClose={handleSearchClose}
@@ -82,7 +83,6 @@ function MainLayoutContent({ children }: { children: ReactNode }) {
             onPostDetailClose={closePostDetail}
           />
         )}
-      </main>
 
       <SearchSidebar isOpen={isSearchOpen} onClose={handleSearchClose} />
 

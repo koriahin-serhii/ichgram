@@ -37,6 +37,10 @@
 }
 
 @media (max-width: 768px) {
+  .footer {
+    margin-bottom: 0px;
+  }
+
   .nav {
     gap: 16px;
     margin-bottom: 20px;
@@ -44,5 +48,13 @@
 
   .link {
     font-size: 13px;
+  }
+
+  .copyright {
+    font-size: 11px;
+  }
+
+  .content{
+    padding: 0 72px;
   }
 }

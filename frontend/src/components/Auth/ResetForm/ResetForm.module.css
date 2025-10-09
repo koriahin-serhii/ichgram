@@ -58,10 +58,8 @@
 }
 .error {
   color: #ef4444;
-  font-size: 13px;
+  font-size: 12px;
   padding: 8px;
-  background: #fef2f2;
-  border-radius: 4px;
   text-align: center;
 }
 .success {

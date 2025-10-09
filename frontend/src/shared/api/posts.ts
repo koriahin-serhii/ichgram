@@ -35,6 +35,7 @@ export interface FeedResponse {
 export const postKeys = {
   all: ['posts'] as const,
   feed: () => [...postKeys.all, 'feed'] as const,
+  explore: () => [...postKeys.all, 'explore'] as const,
   detail: (id: ID) => [...postKeys.all, 'detail', id] as const,
   byUser: (userId: ID) => [...postKeys.all, 'user', userId] as const,
 };
@@ -85,6 +86,19 @@ export async function updatePost(id: ID, description?: string, image?: File) {
 export function useFeed() {
   return useInfiniteQuery({
     queryKey: postKeys.feed(),
+    queryFn: ({ pageParam = 1 }) => getFeed(pageParam, 10),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      return lastPage.pagination.hasMore 
+        ? lastPage.pagination.currentPage + 1 
+        : undefined;
+    },
+  });
+}
+
+export function useExploreFeed() {
+  return useInfiniteQuery({
+    queryKey: postKeys.explore(),
     queryFn: ({ pageParam = 1 }) => getFeed(pageParam, 10),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {

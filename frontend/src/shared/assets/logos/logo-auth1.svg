@@ -1,0 +1,17 @@
+<svg width="320" height="80" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="80" fill="white"/>
+  <defs>
+    <linearGradient id="skyGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#E91E8C;stop-opacity:1" />
+      <stop offset="20%" style="stop-color:#C724D8;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#6366F1;stop-opacity:1" />
+      <stop offset="80%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <text x="160" y="50" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="700" fill="url(#skyGradient)" letter-spacing="2" text-anchor="middle">
+    SKYJECTIV
+  </text>
+</svg>
